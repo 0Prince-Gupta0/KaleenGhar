@@ -73,7 +73,13 @@ if (checkUser.authProvider === "google") {
       { expiresIn: "60m" }
     );
 
-    res.cookie("token", token, { httpOnly: true, secure: false }).json({
+    res.cookie("token", token, { 
+      httpOnly: true, 
+      // secure: false,
+      secure: true,           
+  sameSite: "none",      
+  maxAge: 60 * 60 * 1000, 
+    }).json({
       success: true,
       message: "Logged in successfully",
       user: {
@@ -154,8 +160,11 @@ const googleLogin = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false,
+      // sameSite: "lax",
+      // secure: false,
+       secure: true,
+  sameSite: "none",
+  maxAge: 60 * 60 * 1000,
     });
 
     res.json({
