@@ -36,7 +36,7 @@ function Testimonials() {
           </h2>
 
           <p className="mt-6 max-w-xl mx-auto text-[#6B7280] leading-relaxed">
-            Hear from people who have brought Kaleen Ghar craftsmanship into
+            Hear from people who have brought Qaleen Ghar craftsmanship into
             their homes.
           </p>
         </div>

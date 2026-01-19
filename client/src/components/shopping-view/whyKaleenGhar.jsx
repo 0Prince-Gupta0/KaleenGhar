@@ -17,7 +17,7 @@ const reasons = [
   },
 ];
 
-function WhyKaleenGhar() {
+function WhyQaleenGhar() {
   return (
     <section className="relative py-28 overflow-hidden">
       {/* BACKGROUND */}
@@ -33,7 +33,7 @@ function WhyKaleenGhar() {
           </span>
 
           <h2 className="mt-4 text-4xl font-extrabold text-[#1F2933]">
-            Why Kaleen Ghar
+            Why Qaleen Ghar
           </h2>
 
           <p className="mt-6 max-w-xl mx-auto text-[#6B7280] leading-relaxed">
@@ -91,4 +91,4 @@ function WhyKaleenGhar() {
   );
 }
 
-export default WhyKaleenGhar;
+export default WhyQaleenGhar;

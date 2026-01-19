@@ -26,7 +26,7 @@ function AuthLayout() {
         drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]
       "
     >
-      Kaleen Ghar
+      Qaleen Ghar
     </p>
 
     <h1 className="text-2xl font-bold text-white tracking-wide drop-shadow-sm">

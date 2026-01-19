@@ -17,7 +17,7 @@ function BrandStory() {
           </h2>
 
           <p className="mt-6 text-[#6B7280] leading-relaxed">
-            Every Kaleen Ghar rug is handcrafted by skilled artisans using
+            Every Qaleen Ghar rug is handcrafted by skilled artisans using
             time-honored weaving techniques. Each knot reflects patience,
             tradition, and unmatched craftsmanship.
           </p>

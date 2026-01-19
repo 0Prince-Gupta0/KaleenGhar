@@ -9,7 +9,7 @@ import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { useToast } from "@/components/ui/use-toast";
 import { getFeatureImages } from "@/store/common-slice";
 import Testimonials from "@/components/shopping-view/testimonials";
-import WhyKaleenGhar from "@/components/shopping-view/whyKaleenGhar";
+import WhyQaleenGhar from "@/components/shopping-view/whyKaleenGhar";
 import SignatureCollections from "@/components/shopping-view/signatureCollections";
 import Footer from "@/components/shopping-view/footer";
 
@@ -92,7 +92,7 @@ function ShoppingHome() {
           <img
             key={index}
             src={slide?.image}
-            alt="Kaleen Ghar banner"
+            alt="Qaleen Ghar banner"
             className={`
               absolute inset-0 w-full h-full object-cover
               transition-opacity duration-1000
@@ -105,7 +105,7 @@ function ShoppingHome() {
 
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
           <p className="text-xs tracking-[0.35em] uppercase text-[#E0C36A] mb-4">
-            Kaleen Ghar
+            Qaleen Ghar
           </p>
 
           <h1 className="text-4xl md:text-6xl font-bold text-white max-w-4xl">
@@ -194,7 +194,7 @@ function ShoppingHome() {
         </div>
       </section>
 
-      <WhyKaleenGhar />
+      <WhyQaleenGhar />
       <Testimonials />
       <Footer />
     </div>

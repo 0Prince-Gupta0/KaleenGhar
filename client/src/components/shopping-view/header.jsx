@@ -226,7 +226,7 @@ export default function ShoppingHeader() {
           to="/shop/home"
           className="font-bold tracking-widest text-[#C9A24D]"
         >
-          KALEEN GHAR
+          QALEEN GHAR
         </Link>
 
         <div className="hidden lg:block">

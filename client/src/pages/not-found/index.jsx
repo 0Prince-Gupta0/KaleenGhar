@@ -43,7 +43,7 @@ function NotFound() {
 
         {/* Brand */}
         <p className="mt-10 text-xs tracking-[0.3em] uppercase text-[#C9A24D]">
-          Kaleen Ghar
+          Qaleen Ghar
         </p>
       </div>
     </div>
