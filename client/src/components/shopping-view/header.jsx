@@ -86,6 +86,7 @@ function MenuItems() {
                     text-sm
                     cursor-pointer
                     hover:bg-[#F5EFE6]
+                    hover:rounded-xl
                     whitespace-nowrap
                   "
                 >
