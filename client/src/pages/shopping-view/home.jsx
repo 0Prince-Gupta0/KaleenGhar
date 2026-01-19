@@ -34,7 +34,7 @@ function ShoppingHome() {
       setCurrentSlide(
         (prev) => (prev + 1) % featureImageList.length
       );
-    }, 4000);
+    }, 3000);
   }
 
   function stopAutoSlide() {
@@ -101,7 +101,7 @@ function ShoppingHome() {
           />
         ))}
 
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-black/50 pointer-events-none" />
 
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
           <p className="text-xs tracking-[0.35em] uppercase text-[#E0C36A] mb-4">
@@ -128,14 +128,16 @@ function ShoppingHome() {
         <Button
           variant="outline"
           size="icon"
-          onClick={() =>
+          onClick={() =>{
+             // console.log("-");
             setCurrentSlide(
               (prev) =>
                 (prev - 1 + featureImageList.length) %
                 featureImageList.length
             )
           }
-          className="absolute top-1/2 left-6 -translate-y-1/2 bg-white/80"
+          }
+          className="absolute top-1/2 left-6 -translate-y-1/2 bg-white/80 z-20"
         >
           <ChevronLeftIcon />
         </Button>
@@ -143,12 +145,14 @@ function ShoppingHome() {
         <Button
           variant="outline"
           size="icon"
-          onClick={() =>
+          onClick={() =>{
+            // console.log("+");
             setCurrentSlide(
               (prev) => (prev + 1) % featureImageList.length
             )
           }
-          className="absolute top-1/2 right-6 -translate-y-1/2 bg-white/80"
+          }
+          className="absolute top-1/2 right-6 -translate-y-1/2 bg-white/80 z-20"
         >
           <ChevronRightIcon />
         </Button>
