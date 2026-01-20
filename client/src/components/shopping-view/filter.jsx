@@ -5,7 +5,7 @@ import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 
-function ProductFilter({ filters = {}, handleFilter }) {
+function ProductFilter({ filters = {}, handleFilter, clearAllFilters  }) {
   const [collapsed, setCollapsed] = useState(
   Object.keys(filterOptions).reduce((acc, key) => {
     acc[key] = true; // true = collapsed
@@ -23,13 +23,7 @@ function ProductFilter({ filters = {}, handleFilter }) {
     }));
   }
 
-  function clearAllFilters() {
-    Object.keys(filters).forEach((section) => {
-      filters[section].forEach((value) =>
-        handleFilter(section, value)
-      );
-    });
-  }
+
 
   return (
     <aside

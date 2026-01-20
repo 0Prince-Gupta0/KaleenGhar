@@ -139,11 +139,22 @@ searchParams.forEach((value, key) => {
   setSearchParams(params);
 }
 
+function clearAllFilters() {
+  const params = new URLSearchParams(searchParams);
+
+  // Remove only filter keys
+  Object.keys(filters).forEach((key) => {
+    params.delete(key);
+  });
+
+  setSearchParams(params);
+}
+
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8 p-6">
       
-      <ProductFilter filters={filters} handleFilter={handleFilter} />
+      <ProductFilter filters={filters} handleFilter={handleFilter}  clearAllFilters={clearAllFilters}/>
 
       <div className="bg-background w-full rounded-2xl border">
         <div className="p-5 border-b flex items-center justify-between">
