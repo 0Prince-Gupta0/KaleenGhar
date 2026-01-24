@@ -15,12 +15,13 @@ import {
 } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import axios from "axios";
+
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 function AdminDashboard() {
-  const [imageFile, setImageFile] = useState(null);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
-  const [imageLoadingState, setImageLoadingState] = useState(false);
-
   const dispatch = useDispatch();
   const { toast } = useToast();
 
@@ -28,142 +29,188 @@ function AdminDashboard() {
     (state) => state.commonFeature
   );
 
-  /* ================= UPLOAD ================= */
-  function handleUploadFeatureImage() {
+  const [activeTab, setActiveTab] = useState("images");
+
+  // Image upload states
+  const [imageFile, setImageFile] = useState(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
+  const [imageLoadingState, setImageLoadingState] = useState(false);
+
+  // Hero text states
+  const [hero, setHero] = useState({
+    title: "",
+    subtitle: "",
+    description: "",
+  });
+
+  /* ================= FETCH HERO ================= */
+  useEffect(() => {
+    axios.get(`${BASE_URL}/api/common/hero`).then((res) => {
+      if (res.data) setHero(res.data);
+    });
+  }, []);
+
+  /* ================= FETCH IMAGES ================= */
+  useEffect(() => {
+    dispatch(getFeatureImages());
+  }, [dispatch]);
+
+  /* ================= IMAGE UPLOAD ================= */
+  const handleUploadFeatureImage = () => {
     if (!uploadedImageUrl || imageLoadingState) return;
 
     dispatch(addFeatureImage(uploadedImageUrl)).then((res) => {
       if (res?.payload?.success) {
         dispatch(getFeatureImages());
-        setImageFile(null);
         setUploadedImageUrl("");
-        toast({ title: "Feature image added" , variant: "success",});
+        toast({ title: "Feature image added", variant: "success" });
       }
     });
-  }
+  };
 
-  /* ================= DELETE ================= */
-  function handleDeleteFeatureImage(id) {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this feature image?"
-    );
-    if (!confirmDelete) return;
+  const handleDeleteFeatureImage = (id) => {
+    if (!window.confirm("Delete this image?")) return;
 
     dispatch(deleteFeatureImage(id)).then((res) => {
       if (res?.payload?.success) {
         dispatch(getFeatureImages());
-        toast({ title: "Feature image deleted" , variant: "destructive", });
+        toast({ title: "Feature image deleted" });
       }
     });
-  }
+  };
 
-  /* ================= FETCH ================= */
-  useEffect(() => {
-    dispatch(getFeatureImages());
-  }, [dispatch]);
+  /* ================= SAVE HERO ================= */
+  const handleSaveHero = async () => {
+    try {
+      await axios.put(
+        `${BASE_URL}/api/common/hero`,
+        hero,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      toast({ title: "Hero content updated", variant: "success" });
+    } catch {
+      toast({ title: "Only admin can update", variant: "destructive" });
+    }
+  };
 
   /* ================= UI ================= */
   return (
     <div className="space-y-8">
-      {/* ================= UPLOAD CARD ================= */}
-      <Card className="border border-[#E6DED1] bg-[#FFFCF7] rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-xl text-[#1F2933]">
-            Upload Feature Image
-          </CardTitle>
-        </CardHeader>
 
-        <CardContent className="space-y-4">
-          <ProductImageUpload
-            imageFile={imageFile}
-            setImageFile={setImageFile}
-            uploadedImageUrl={uploadedImageUrl}
-            setUploadedImageUrl={setUploadedImageUrl}
-            setImageLoadingState={setImageLoadingState}
-            imageLoadingState={imageLoadingState}
-            isCustomStyling
-          />
+      {/* TABS */}
+      <div className="flex gap-4">
+        <Button
+          variant={activeTab === "images" ? "default" : "outline"}
+          onClick={() => setActiveTab("images")}
+        >
+          Feature Images
+        </Button>
+        <Button
+          variant={activeTab === "hero" ? "default" : "outline"}
+          onClick={() => setActiveTab("hero")}
+        >
+          Hero Content
+        </Button>
+      </div>
 
-          <Button
-            onClick={handleUploadFeatureImage}
-            disabled={!uploadedImageUrl || imageLoadingState}
-            className="w-full bg-[#1F2933] text-white hover:bg-black"
-          >
-            {imageLoadingState ? "Uploading..." : "Save Feature Image"}
-          </Button>
-        </CardContent>
-      </Card>
+      {/* ================= FEATURE IMAGES TAB ================= */}
+      {activeTab === "images" && (
+        <>
+          <Card className="border bg-[#FFFCF7]">
+            <CardHeader>
+              <CardTitle>Upload Feature Image</CardTitle>
+            </CardHeader>
 
-      {/* ================= FEATURE IMAGES ================= */}
-      <Card className="border border-[#E6DED1] bg-[#FFFCF7] rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-xl text-[#1F2933]">
-            Feature Images
-          </CardTitle>
-        </CardHeader>
+            <CardContent className="space-y-4">
+              <ProductImageUpload
+                imageFile={imageFile}
+                setImageFile={setImageFile}
+                uploadedImageUrl={uploadedImageUrl}
+                setUploadedImageUrl={setUploadedImageUrl}
+                setImageLoadingState={setImageLoadingState}
+                imageLoadingState={imageLoadingState}
+                isCustomStyling
+              />
 
-        <CardContent>
-          {featureImageList && featureImageList.length > 0 ? (
-            <div className="grid gap-6">
-              {featureImageList.map((item) => (
-                <div
-                  key={item._id}
-                  className="
-                    relative
-                    overflow-hidden
-                    rounded-xl
-                    border
-                    border-[#E6DED1]
-                    group
-                  "
-                >
-                  {/* IMAGE */}
+              <Button
+                onClick={handleUploadFeatureImage}
+                disabled={!uploadedImageUrl}
+                className="w-full"
+              >
+                Save Feature Image
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Feature Images</CardTitle>
+            </CardHeader>
+
+            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {featureImageList?.map((item) => (
+                <div key={item._id} className="relative group">
                   <img
                     src={item.image}
-                    alt="Feature banner"
-                    className="
-                      w-full
-                      h-[300px]
-                      object-cover
-                      transition-transform
-                      duration-300
-                      group-hover:scale-105
-                    "
+                    className="w-full h-[260px] object-cover rounded-lg"
                   />
-
-                  {/* DELETE BUTTON */}
                   <button
-                    onClick={() =>
-                      handleDeleteFeatureImage(item._id)
-                    }
-                    className="
-                      absolute
-                      top-3
-                      right-3
-                      bg-white/90
-                      hover:bg-red-50
-                      border
-                      border-red-200
-                      text-red-600
-                      rounded-full
-                      p-2
-                      opacity-0
-                      group-hover:opacity-100
-                      transition
-                    "
+                    onClick={() => handleDeleteFeatureImage(item._id)}
+                    className="absolute top-3 right-3 bg-white p-2 rounded-full text-red-600 opacity-0 group-hover:opacity-100"
                   >
                     <Trash2 size={16} />
                   </button>
                 </div>
               ))}
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground text-center py-10">
-              No feature images uploaded yet
-            </p>
-          )}
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </>
+      )}
+
+      {/* ================= HERO CONTENT TAB ================= */}
+      {activeTab === "hero" && (
+        <Card className="border bg-[#FFFCF7]">
+          <CardHeader>
+            <CardTitle>Hero Section Content</CardTitle>
+          </CardHeader>
+
+          <CardContent className="space-y-4">
+            <Input
+              placeholder="Title"
+              value={hero.title}
+              onChange={(e) =>
+                setHero({ ...hero, title: e.target.value })
+              }
+            />
+
+            <Input
+              placeholder="Subtitle"
+              value={hero.subtitle}
+              onChange={(e) =>
+                setHero({ ...hero, subtitle: e.target.value })
+              }
+            />
+
+            <Textarea
+              placeholder="Description"
+              rows={4}
+              value={hero.description}
+              onChange={(e) =>
+                setHero({ ...hero, description: e.target.value })
+              }
+            />
+
+            <Button onClick={handleSaveHero}>
+              Save Hero Content
+            </Button>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

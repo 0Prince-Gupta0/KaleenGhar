@@ -24,7 +24,13 @@ function ShoppingHome() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { toast } = useToast();
+const [hero, setHero] = useState(null);
 
+useEffect(() => {
+  fetch(`${import.meta.env.VITE_BACKEND_URL}/api/common/hero`)
+    .then((res) => res.json())
+    .then((data) => setHero(data));
+}, []);
   /* -------------------- CAROUSEL -------------------- */
   function startAutoSlide() {
     if (!featureImageList?.length) return;
@@ -108,13 +114,17 @@ function ShoppingHome() {
             Qaleen Ghar
           </p>
 
-          <h1 className="text-4xl md:text-6xl font-bold text-white max-w-4xl">
-            Handcrafted Carpets <br /> for Royal Living
-          </h1>
+         <h1 className="text-4xl md:text-6xl font-bold text-white max-w-4xl">
+  {hero?.title || "Handcrafted Carpets"}
+  <br />
+  {hero?.subtitle || "for Royal Living"}
+</h1>
 
-          <p className="mt-6 text-lg text-gray-200 max-w-xl">
-            Timeless designs woven with heritage & elegance.
-          </p>
+<p className="mt-6 text-lg text-gray-200 max-w-xl">
+  {hero?.description ||
+    "Timeless designs woven with heritage & elegance."}
+</p>
+
 
           <Button
             onClick={() => navigate("/shop/listing")}
