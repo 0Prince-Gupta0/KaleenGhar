@@ -2,10 +2,17 @@ const Product = require("../../models/Product");
 
 const getFilteredProducts = async (req, res) => {
   try {
-    const { sortBy = "price-lowtohigh", search, ...rest } = req.query;
+    const {
+      sortBy = "price-lowtohigh",
+      search,
+      page = 1,
+      limit = 50,
+      ...rest
+    } = req.query;
 
     const filters = {};
 
+    // Apply filters
     Object.keys(rest).forEach((key) => {
       if (Array.isArray(rest[key])) {
         filters[key] = { $in: rest[key] };
@@ -14,16 +21,16 @@ const getFilteredProducts = async (req, res) => {
       }
     });
 
+    // Search filter
     if (search) {
-  filters.$or = [
-    { title: { $regex: search, $options: "i" } },
-    { description: { $regex: search, $options: "i" } },
-  ];
-}
+      filters.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
 
-
+    // Sorting
     let sort = {};
-
     switch (sortBy) {
       case "price-lowtohigh":
         sort.price = 1;
@@ -41,11 +48,25 @@ const getFilteredProducts = async (req, res) => {
         sort.price = 1;
     }
 
-    const products = await Product.find(filters).sort(sort);
+    const skip = (Number(page) - 1) * Number(limit);
+
+    // Total count (important for pagination UI)
+    const totalProducts = await Product.countDocuments(filters);
+
+    const products = await Product.find(filters)
+      .sort(sort)
+      .skip(skip)
+      .limit(Number(limit));
 
     res.status(200).json({
       success: true,
       data: products,
+      pagination: {
+        currentPage: Number(page),
+        totalPages: Math.ceil(totalProducts / limit),
+        totalProducts,
+        limit: Number(limit),
+      },
     });
   } catch (error) {
     console.error(error);
