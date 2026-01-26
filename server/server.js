@@ -17,6 +17,7 @@ const shopReviewRouter = require("./routes/shop/review-routes");
 const commonFeatureRouter = require("./routes/common/feature-routes");
 const heroRoutes=require("./routes/common/hero-routes");
 const stripeRoutes = require("./routes/shop/stripeRoutes");
+const razorpayRoutes=require("./routes/shop/razorpay-routes");
 
 mongoose
   .connect(process.env.DB_URL)
@@ -40,6 +41,11 @@ app.use(
     ],
     credentials: true,
   })
+);
+app.use(
+  "/api/payment/webhook",
+  express.raw({ type: "application/json" }),
+  require("./routes/shop/razorpay-routes")
 );
 
 /* ================= STRIPE WEBHOOK (RAW BODY) ================= */
@@ -65,6 +71,7 @@ app.use("/api/shop/review", shopReviewRouter);
 app.use("/api/common/feature", commonFeatureRouter);
 app.use("/api/common/hero", heroRoutes );
 app.use("/api/shop/stripe", stripeRoutes);
+app.use("/api/payment", razorpayRoutes);
 
 /* ================= START ================= */
 app.listen(PORT, () =>

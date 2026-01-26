@@ -32,7 +32,7 @@ function ShoppingListing() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(1);
-  const limit = 1;
+  const limit = 50;
 
   const isFirstRender = useRef(true);
 
