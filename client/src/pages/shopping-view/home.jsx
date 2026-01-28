@@ -12,6 +12,8 @@ import Testimonials from "@/components/shopping-view/testimonials";
 import WhyQaleenGhar from "@/components/shopping-view/whyKaleenGhar";
 import SignatureCollections from "@/components/shopping-view/signatureCollections";
 import Footer from "@/components/shopping-view/footer";
+import axios from "axios";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 function ShoppingHome() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -25,6 +27,21 @@ function ShoppingHome() {
   const navigate = useNavigate();
   const { toast } = useToast();
 const [hero, setHero] = useState(null);
+
+const [featuredProducts, setFeaturedProducts] = useState([]);
+
+useEffect(() => {
+  fetchFeaturedProducts();
+}, []);
+
+const fetchFeaturedProducts = async () => {
+  try {
+    const res = await axios.get(`${BASE_URL}/api/shop/products/featured`);
+    setFeaturedProducts(res.data.products);
+  } catch (error) {
+    console.error("Failed to fetch featured products", error);
+  }
+};
 
 useEffect(() => {
   fetch(`${import.meta.env.VITE_BACKEND_URL}/api/common/hero`)
@@ -52,6 +69,15 @@ useEffect(() => {
 
   /* -------------------- ADD TO CART -------------------- */
   function handleAddtoCart(productId) {
+     if (!user) {
+      toast({
+        title: "Login required",
+        description: "Please login to add items to your cart",
+        variant: "destructive",
+      });
+      navigate("/auth/login");
+      return;
+    }
     dispatch(
       addToCart({
         userId: user?.id,
@@ -172,41 +198,49 @@ useEffect(() => {
       <SignatureCollections />
 
       {/* ================= FEATURED PRODUCTS ================= */}
-      <section className="py-28 bg-[#FFFCF7]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <span className="text-xs tracking-widest uppercase text-[#C9A24D]">
-              Handcrafted Excellence
-            </span>
+     <section className="py-28 bg-[#FFFCF7]">
+  <div className="max-w-7xl mx-auto px-6">
 
-            <h2 className="text-4xl md:text-5xl font-bold mt-4">
-              Featured Collection
-            </h2>
-          </div>
+    <div className="text-center mb-20">
+      <span className="text-xs tracking-widest uppercase text-[#C9A24D]">
+        Handcrafted Excellence
+      </span>
+      <h2 className="text-4xl md:text-5xl font-bold mt-4">
+        Featured Collection
+      </h2>
+    </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
-            {productList?.slice(0, 8).map((product) => (
-              <ShoppingProductTile
-                key={product._id}
-                product={product}
-                handleAddtoCart={handleAddtoCart}
-                onClick={() =>
-                  navigate(`/shop/product/${product._id}`)
-                }
-              />
-            ))}
-          </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
+      {featuredProducts.length > 0 ? (
+        featuredProducts.map((product) => (
+          <ShoppingProductTile
+            key={product._id}
+            product={product}
+            handleAddtoCart={handleAddtoCart}
+            onClick={() =>
+              navigate(`/shop/product/${product._id}`)
+            }
+          />
+        ))
+      ) : (
+        <p className="text-center col-span-full text-gray-500">
+          No featured products available
+        </p>
+      )}
+    </div>
 
-          <div className="flex justify-center mt-20">
-            <Button
-              onClick={() => navigate("/shop/listing")}
-              className="px-10 py-4 bg-[#C9A24D] text-black rounded-full"
-            >
-              Explore Full Collection
-            </Button>
-          </div>
-        </div>
-      </section>
+    <div className="flex justify-center mt-20">
+      <Button
+        onClick={() => navigate("/shop/listing")}
+        className="px-10 py-4 bg-[#C9A24D] text-black rounded-full"
+      >
+        Explore Full Collection
+      </Button>
+    </div>
+
+  </div>
+</section>
+
 
       <WhyQaleenGhar />
       <Testimonials />

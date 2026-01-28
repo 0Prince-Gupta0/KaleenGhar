@@ -32,6 +32,7 @@ const initialFormData = {
   salePrice: "",
   totalStock: "",
   averageReview: 0,
+   isFeatured: false,
 };
 
 function AdminProducts() {
@@ -55,7 +56,7 @@ function AdminProducts() {
       ...formData,
       image: uploadedImageUrl || formData.image,
     };
-// console.log("SUBMIT PAYLOAD 👉", payload);
+console.log("SUBMIT PAYLOAD 👉", payload);
     if (currentEditedId) {
       dispatch(editProduct({ id: currentEditedId, formData: payload }))
         .then((data) => {

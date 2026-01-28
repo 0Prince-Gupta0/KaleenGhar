@@ -126,6 +126,13 @@ export const addProductFormElements = [
     type: "number",
     placeholder: "Enter total stock",
   },
+  {
+  label: "Show on Home Page",
+  name: "isFeatured",
+  componentType: "switch", // or "checkbox"
+  defaultValue: false,
+}
+
 ];
 
 // ================= SHOP HEADER MENU =================

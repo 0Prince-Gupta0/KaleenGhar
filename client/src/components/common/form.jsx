@@ -21,11 +21,15 @@ function CommonForm({
   function renderInputsByComponentType(control) {
     const value = formData[control.name] ?? "";
 
-    const commonChangeHandler = (val) =>
+    const commonChangeHandler = (val) =>{
+      
+      console.log(control.name);
+      console.log(val);
       setFormData({
         ...formData,
         [control.name]: val,
       });
+    }
 
     switch (control.componentType) {
       case "input":
@@ -72,6 +76,26 @@ function CommonForm({
             className="bg-[#FFFCF7] min-h-[90px]"
           />
         );
+case "switch":
+  return (
+    <div className="flex items-center gap-3">
+      {/* <label className="text-sm">{control.label}</label> */}
+
+      <button
+        type="button"
+        onClick={() => commonChangeHandler(!value)}
+        className={`w-12 h-6 rounded-full transition ${
+          value ? "bg-green-500" : "bg-gray-300"
+        }`}
+      >
+        <span
+          className={`block w-5 h-5 bg-white rounded-full transition transform ${
+            value ? "translate-x-6" : "translate-x-1"
+          }`}
+        />
+      </button>
+    </div>
+  );
 
       default:
         return (

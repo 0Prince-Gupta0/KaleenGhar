@@ -106,6 +106,7 @@ const editProduct = async (req, res) => {
       salePrice,
       totalStock,
       averageReview,
+      isFeatured
     } = req.body;
 
     const product = await Product.findById(id);
@@ -130,7 +131,7 @@ const editProduct = async (req, res) => {
     if (totalStock !== undefined) product.totalStock = Number(totalStock);
     if (averageReview !== undefined)
       product.averageReview = Number(averageReview);
-
+    if (isFeatured !== undefined) product.isFeatured=isFeatured;
     await product.save();
 
     res.status(200).json({

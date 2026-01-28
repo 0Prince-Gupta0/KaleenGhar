@@ -103,7 +103,24 @@ const getProductDetails = async (req, res) => {
   }
 };
 
+const getFeaturedProducts = async (req, res) => {
+  try {
+    const products = await Product.find({ isFeatured: true }).sort({ updatedAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      products,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   getFilteredProducts,
   getProductDetails,
+  getFeaturedProducts,
 };
