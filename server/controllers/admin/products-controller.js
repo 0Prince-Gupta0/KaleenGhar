@@ -24,36 +24,30 @@ const handleImageUpload = async (req, res) => {
 /* ================= ADD PRODUCT ================= */
 const addProduct = async (req, res) => {
   try {
-  //  console.log("REQ.BODY 👉", req.body);
-
     const {
-      image,
+      gallery,
       title,
       description,
       category,
       color,
-      size,
       shape,
       material,
-      price,
-      salePrice,
-      totalStock,
+      sizes,
       averageReview,
+      isFeatured,
     } = req.body;
 
     const product = new Product({
-      image,
+      gallery, // ✅ NEW
       title,
       description,
       category,
       color,
-      size,
       shape,
       material,
-      price: Number(price),
-      salePrice: Number(salePrice || 0),
-      totalStock: Number(totalStock),
+      sizes, // ✅ NEW (array of objects)
       averageReview: Number(averageReview || 0),
+      isFeatured: isFeatured || false,
     });
 
     await product.save();
@@ -94,19 +88,16 @@ const editProduct = async (req, res) => {
     const { id } = req.params;
 
     const {
-      image,
+      gallery,
       title,
       description,
       category,
       color,
-      size,
       shape,
       material,
-      price,
-      salePrice,
-      totalStock,
+      sizes,
       averageReview,
-      isFeatured
+      isFeatured,
     } = req.body;
 
     const product = await Product.findById(id);
@@ -118,20 +109,19 @@ const editProduct = async (req, res) => {
       });
     }
 
-    if (image !== undefined) product.image = image;
+    // ✅ UPDATED FIELDS
+    if (gallery !== undefined) product.gallery = gallery;
     if (title !== undefined) product.title = title;
     if (description !== undefined) product.description = description;
     if (category !== undefined) product.category = category;
     if (color !== undefined) product.color = color;
-    if (size !== undefined) product.size = size;
     if (shape !== undefined) product.shape = shape;
     if (material !== undefined) product.material = material;
-    if (price !== undefined) product.price = Number(price);
-    if (salePrice !== undefined) product.salePrice = Number(salePrice);
-    if (totalStock !== undefined) product.totalStock = Number(totalStock);
+    if (sizes !== undefined) product.sizes = sizes;
     if (averageReview !== undefined)
       product.averageReview = Number(averageReview);
-    if (isFeatured !== undefined) product.isFeatured=isFeatured;
+    if (isFeatured !== undefined) product.isFeatured = isFeatured;
+
     await product.save();
 
     res.status(200).json({

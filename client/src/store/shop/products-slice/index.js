@@ -14,36 +14,34 @@ const initialState = {
 
 export const fetchAllFilteredProducts = createAsyncThunk(
   "products/fetchAllFilteredProducts",
-  async (
-    { filterParams, sortParams, search, page, limit },
-    { signal }
-  ) => {
+  async ({ filterParams, sortParams, search, page, limit }, { signal }) => {
     const params = new URLSearchParams();
 
-    // Filters
-    Object.entries(filterParams).forEach(([key, values]) => {
-      values.forEach((v) => params.append(key, v));
+    /* ===== FILTERS (SEND AS CSV) ===== */
+    Object.entries(filterParams || {}).forEach(([key, values]) => {
+      if (values?.length) {
+        params.set(key, values.join(",")); // ⭐ IMPORTANT
+      }
     });
 
-    // Search
-    if (search) params.append("search", search);
+    /* ===== SEARCH ===== */
+    if (search) params.set("search", search);
 
-    // Sort
-    if (sortParams) params.append("sortBy", sortParams);
+    /* ===== SORT ===== */
+    if (sortParams) params.set("sortBy", sortParams);
 
-    // Pagination
-    params.append("page", page);
-    params.append("limit", limit);
+    /* ===== PAGINATION ===== */
+    params.set("page", page);
+    params.set("limit", limit);
 
     const response = await axios.get(
       `${BASE_URL}/api/shop/products/get?${params.toString()}`,
       { signal }
     );
 
-    return response.data; // ✅ return full response
+    return response.data;
   }
 );
-
 /* ================= PRODUCT DETAILS ================= */
 
 export const fetchProductDetails = createAsyncThunk(

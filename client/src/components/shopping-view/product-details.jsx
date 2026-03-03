@@ -30,43 +30,49 @@ const navigate = useNavigate();
     dispatch(getReviews(id));
   }, [dispatch, id]);
 
-  function handleAddToCart() {
-    if (!user) {
-  toast({
-    title: "Login required",
-    description: "Please login to add items to your cart",
-    variant: "destructive",
-  });
-
-  navigate("/auth/login");
-  return;
-}
-
-    const items = cartItems?.items || [];
-    const existing = items.find((i) => i.productId === id);
-
-    if (
-      existing &&
-      existing.quantity + 1 > productDetails.totalStock
-    ) {
-      toast({
-        title: "Stock limit reached",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    dispatch(
-      addToCart({
-        userId: user?.id,
-        productId: id,
-        quantity: 1,
-      })
-    ).then(() => {
-      dispatch(fetchCartItems(user?.id));
-      toast({ title: "Added to cart" , variant: "success",});
+ function handleAddToCart() {
+  if (!user) {
+    toast({
+      title: "Login required",
+      description: "Please login to add items to your cart",
+      variant: "destructive",
     });
+    navigate("/auth/login");
+    return;
   }
+
+  const items = cartItems || [];
+console.log(items);
+  const existing = items.find(
+    (i) => i.productId === id
+  );
+
+  console.log(existing);
+  if (
+    existing &&
+    existing.quantity + 1 > productDetails.totalStock
+  ) {
+    toast({
+      title: "Stock limit reached",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  dispatch(
+    addToCart({
+      userId: user?.id,
+      productId: id,
+      quantity: 1,
+    })
+  ).then(() => {
+    dispatch(fetchCartItems(user?.id));
+    toast({
+      title: "Added to cart",
+      variant: "success",
+    });
+  });
+}
 
   function handleAddReview() {
     if (!rating || !reviewMsg) return;
@@ -93,6 +99,8 @@ const navigate = useNavigate();
         reviews.length
       : 0;
 
+
+      
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
       {/* TOP */}

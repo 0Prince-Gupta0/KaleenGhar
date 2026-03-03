@@ -2,22 +2,29 @@ const mongoose = require("mongoose");
 
 const ProductSchema = new mongoose.Schema(
   {
-    image: String,
+    gallery: [String], 
     title: String,
     description: String,
     category: String,
     color: String,
-    price: Number,
-    salePrice: Number,
-    totalStock: Number,
     averageReview: Number,
-    size: String,
-    shape:String,
-    material:String,
-      isFeatured: {
-    type: Boolean,
-    default: false,
-  },
+
+    sizes: [
+      {
+        label: { type: String, required: true },
+        price: { type: Number, required: true },
+        salePrice: Number,
+        stock: { type: Number, default: 0 },
+      },
+    ],
+
+    shape: String,
+    material: String,
+
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

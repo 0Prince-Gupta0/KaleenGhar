@@ -27,16 +27,16 @@ function ShoppingListing() {
     (state) => state.shopProducts
   );
 
-  const { cartItems } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(1);
-  const limit = 50;
+  const [searchInput, setSearchInput] = useState("");
 
+  const limit = 50;
   const isFirstRender = useRef(true);
 
-  /* ================= FILTERS ================= */
+  /* ================= PARSE PARAMS ================= */
 
   const filters = {};
   let sort = "price-lowtohigh";
@@ -47,6 +47,11 @@ function ShoppingListing() {
     else if (key === "search") search = value;
     else filters[key] = value.split(",");
   });
+
+  /* sync search input */
+  useEffect(() => {
+    setSearchInput(search);
+  }, [search]);
 
   /* ================= FETCH ================= */
 
@@ -60,9 +65,9 @@ function ShoppingListing() {
         limit,
       })
     );
-  }, [page, searchParams]);
+  }, [dispatch, page, sort, search, JSON.stringify(filters)]);
 
-  /* Reset page only when filter/search changes */
+  /* Reset page when filters change */
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -70,6 +75,23 @@ function ShoppingListing() {
     }
     setPage(1);
   }, [search, sort, JSON.stringify(filters)]);
+
+
+  useEffect(() => {
+  const delayDebounce = setTimeout(() => {
+    const params = new URLSearchParams(searchParams);
+
+    if (searchInput) {
+      params.set("search", searchInput);
+    } else {
+      params.delete("search");
+    }
+
+    setSearchParams(params);
+  }, 400); // delay in ms
+
+  return () => clearTimeout(delayDebounce);
+}, [searchInput]);
 
   /* ================= HANDLERS ================= */
 
@@ -94,11 +116,6 @@ function ShoppingListing() {
     setSearchParams(params);
   };
 
-  const handleSearch = (value) => {
-    const params = new URLSearchParams(searchParams);
-    value ? params.set("search", value) : params.delete("search");
-    setSearchParams(params);
-  };
 
   const clearAllFilters = () => {
     const params = new URLSearchParams();
@@ -109,34 +126,49 @@ function ShoppingListing() {
 
   /* ================= CART ================= */
 
-  const handleAddtoCart = (productId) => {
-    if (!user) {
-      toast({
-        title: "Login required",
-        description: "Please login to add items to your cart",
-        variant: "destructive",
-      });
-      navigate("/auth/login");
-      return;
-    }
-
-    dispatch(
-      addToCart({
-        userId: user.id,
-        productId,
-        quantity: 1,
-      })
-    ).then(() => {
-      dispatch(fetchCartItems(user.id));
-      toast({ title: "Product added to cart", variant: "success" });
+const handleAddtoCart = (product) => {
+  if (!user) {
+    toast({
+      title: "Login required",
+      description: "Please login to add items to your cart",
+      variant: "destructive",
     });
-  };
+    navigate("/auth/login");
+    return;
+  }
+
+  // If product has sizes
+  if (product.sizes?.length > 1) {
+    toast({
+      title: "Please select a size",
+      description: "Choose size before adding to cart",
+    });
+
+    navigate(`/shop/product/${product._id}`);
+    return;
+  }
+
+  // If only one size → auto add
+  const sizeLabel = product.sizes?.[0]?.label;
+
+  dispatch(
+    addToCart({
+      userId: user.id,
+      productId: product._id,
+      size: sizeLabel,
+      quantity: 1,
+    })
+  ).then(() => {
+    dispatch(fetchCartItems(user.id));
+    toast({ title: "Product added to cart", variant: "success" });
+  });
+};
 
   /* ================= UI ================= */
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8 p-6">
-
+      
       <ProductFilter
         filters={filters}
         handleFilter={handleFilter}
@@ -146,18 +178,17 @@ function ShoppingListing() {
       <div className="bg-background w-full rounded-2xl border">
 
         {/* HEADER */}
-        <div className="p-5 border-b flex justify-between items-center">
+        <div className="p-5 border-b flex flex-col md:flex-row md:items-center justify-between gap-4">
           <h2 className="text-xl font-bold">All Products</h2>
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 w-full md:w-auto">
             <Input
-              placeholder="Search products..."
-              defaultValue={search}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="max-w-sm"
-            />
+  placeholder="Search products..."
+  value={searchInput}
+  onChange={(e) => setSearchInput(e.target.value)}
+  className="md:w-[240px]"
+/>
 
-            {/* ✅ SORT RESTORED */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -185,7 +216,7 @@ function ShoppingListing() {
         {/* PRODUCTS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
           {isLoading ? (
-            <p className="col-span-full text-center">Loading...</p>
+            <p className="col-span-full text-center">Loading products...</p>
           ) : productList?.length ? (
             productList.map((product) => (
               <ShoppingProductTile
@@ -201,84 +232,72 @@ function ShoppingListing() {
         </div>
 
         {/* PAGINATION */}
-       {pagination?.totalPages > 0 && (
-  <div className="flex flex-col items-center gap-4 pb-6">
+        {pagination?.totalPages > 1 && (
+          <div className="flex flex-col items-center gap-4 pb-6">
+            <p className="text-sm text-muted-foreground">
+              Page <span className="font-medium">{page}</span> of{" "}
+              <span className="font-medium">{pagination.totalPages}</span>
+            </p>
 
-    {/* Page Info */}
-    <p className="text-sm text-muted-foreground">
-      Page <span className="font-medium">{page}</span> of{" "}
-      <span className="font-medium">{pagination.totalPages}</span>
-    </p>
+            <div className="flex items-center gap-2 flex-wrap justify-center">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
+              >
+                ← Previous
+              </Button>
 
-    {/* Controls */}
-    <div className="flex items-center gap-2 flex-wrap justify-center">
+              {[...Array(pagination.totalPages)].map((_, index) => {
+                const pageNumber = index + 1;
 
-      {/* Previous */}
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={page === 1}
-        onClick={() => setPage((p) => p - 1)}
-        className="min-w-[90px]"
-      >
-        ← Previous
-      </Button>
+                if (
+                  pageNumber === 1 ||
+                  pageNumber === pagination.totalPages ||
+                  Math.abs(pageNumber - page) <= 1
+                ) {
+                  return (
+                    <button
+                      key={pageNumber}
+                      onClick={() => setPage(pageNumber)}
+                      className={`px-3 py-1 rounded-md text-sm border ${
+                        page === pageNumber
+                          ? "bg-primary text-white border-primary"
+                          : "bg-background hover:bg-muted"
+                      }`}
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+                }
 
-      {/* Page Numbers */}
-      {[...Array(pagination.totalPages)].map((_, index) => {
-        const pageNumber = index + 1;
+                if (
+                  (pageNumber === page - 2 && page > 3) ||
+                  (pageNumber === page + 2 &&
+                    page < pagination.totalPages - 2)
+                ) {
+                  return (
+                    <span key={pageNumber} className="px-2 text-muted-foreground">
+                      ...
+                    </span>
+                  );
+                }
 
-        // Only show nearby pages (UX optimization)
-        if (
-          pageNumber === 1 ||
-          pageNumber === pagination.totalPages ||
-          Math.abs(pageNumber - page) <= 1
-        ) {
-          return (
-            <button
-              key={pageNumber}
-              onClick={() => setPage(pageNumber)}
-              className={`px-3 py-1 rounded-md text-sm border transition
-                ${
-                  page === pageNumber
-                    ? "bg-primary text-white border-primary"
-                    : "bg-background hover:bg-muted"
-                }`}
-            >
-              {pageNumber}
-            </button>
-          );
-        }
+                return null;
+              })}
 
-        // Ellipsis
-        if (
-          (pageNumber === page - 2 && page > 3) ||
-          (pageNumber === page + 2 && page < pagination.totalPages - 2)
-        ) {
-          return (
-            <span key={pageNumber} className="px-2 text-muted-foreground">
-              ...
-            </span>
-          );
-        }
-
-        return null;
-      })}
-
-      {/* Next */}
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={page === pagination.totalPages}
-        onClick={() => setPage((p) => p + 1)}
-        className="min-w-[90px]"
-      >
-        Next →
-      </Button>
-    </div>
-  </div>
-)}
-
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page === pagination.totalPages}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                Next →
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

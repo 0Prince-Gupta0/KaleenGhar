@@ -11,25 +11,23 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 
 function CommonForm({
-  formControls,
-  formData,
+  formControls = [],
+  formData = {},
   setFormData,
   onSubmit,
-  buttonText,
-  isBtnDisabled,
+  buttonText = "Submit",
+  isBtnDisabled = false,
+  hideSubmit = false, // ⭐ new prop
 }) {
-  function renderInputsByComponentType(control) {
-    const value = formData[control.name] ?? "";
+  const handleChange = (name, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-    const commonChangeHandler = (val) =>{
-      
-      console.log(control.name);
-      console.log(val);
-      setFormData({
-        ...formData,
-        [control.name]: val,
-      });
-    }
+  const renderInput = (control) => {
+    const value = formData?.[control.name] ?? "";
 
     switch (control.componentType) {
       case "input":
@@ -37,32 +35,12 @@ function CommonForm({
           <Input
             id={control.name}
             name={control.name}
-            type={control.type}
+            type={control.type || "text"}
             placeholder={control.placeholder}
             value={value}
-            onChange={(e) => commonChangeHandler(e.target.value)}
+            onChange={(e) => handleChange(control.name, e.target.value)}
             className="bg-[#FFFCF7]"
           />
-        );
-
-      case "select":
-        return (
-          <Select
-            key={control.name + value}
-            value={value}
-            onValueChange={(val) => commonChangeHandler(val)}
-          >
-            <SelectTrigger className="bg-[#FFFCF7]">
-              <SelectValue placeholder={control.label} />
-            </SelectTrigger>
-            <SelectContent>
-              {control.options?.map((option) => (
-                <SelectItem key={option.id} value={option.id}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
         );
 
       case "textarea":
@@ -72,45 +50,59 @@ function CommonForm({
             name={control.name}
             placeholder={control.placeholder}
             value={value}
-            onChange={(e) => commonChangeHandler(e.target.value)}
-            className="bg-[#FFFCF7] min-h-[90px]"
+            onChange={(e) => handleChange(control.name, e.target.value)}
+            className="bg-[#FFFCF7] min-h-[100px]"
           />
         );
-case "switch":
-  return (
-    <div className="flex items-center gap-3">
-      {/* <label className="text-sm">{control.label}</label> */}
 
-      <button
-        type="button"
-        onClick={() => commonChangeHandler(!value)}
-        className={`w-12 h-6 rounded-full transition ${
-          value ? "bg-green-500" : "bg-gray-300"
-        }`}
-      >
-        <span
-          className={`block w-5 h-5 bg-white rounded-full transition transform ${
-            value ? "translate-x-6" : "translate-x-1"
-          }`}
-        />
-      </button>
-    </div>
-  );
+      case "select":
+        return (
+          <Select
+            value={value}
+            onValueChange={(val) => handleChange(control.name, val)}
+          >
+            <SelectTrigger className="bg-[#FFFCF7]">
+              <SelectValue placeholder={control.label} />
+            </SelectTrigger>
+            <SelectContent>
+              {control.options?.map((opt) => (
+                <SelectItem key={opt.id} value={opt.id}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        );
+
+      case "switch":
+        return (
+          <button
+            type="button"
+            onClick={() => handleChange(control.name, !value)}
+            className={`w-12 h-6 rounded-full transition ${
+              value ? "bg-green-500" : "bg-gray-300"
+            }`}
+          >
+            <span
+              className={`block w-5 h-5 bg-white rounded-full transition transform ${
+                value ? "translate-x-6" : "translate-x-1"
+              }`}
+            />
+          </button>
+        );
 
       default:
         return (
           <Input
             id={control.name}
             name={control.name}
-            type={control.type}
-            placeholder={control.placeholder}
             value={value}
-            onChange={(e) => commonChangeHandler(e.target.value)}
+            onChange={(e) => handleChange(control.name, e.target.value)}
             className="bg-[#FFFCF7]"
           />
         );
     }
-  }
+  };
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
@@ -120,18 +112,21 @@ case "switch":
             <Label className="text-sm font-medium text-[#1F2933]">
               {control.label}
             </Label>
-            {renderInputsByComponentType(control)}
+            {renderInput(control)}
           </div>
         ))}
       </div>
 
-      <Button
-        type="submit"
-        disabled={isBtnDisabled}
-        className="w-full bg-[#1F2933] hover:bg-black text-white font-medium py-2.5 rounded-lg transition"
-      >
-        {buttonText || "Submit"}
-      </Button>
+      {/* ✅ Submit button optional */}
+      {!hideSubmit && (
+        <Button
+          type="submit"
+          disabled={isBtnDisabled}
+          className="w-full bg-[#1F2933] hover:bg-black text-white font-medium py-2.5 rounded-lg transition"
+        >
+          {buttonText}
+        </Button>
+      )}
     </form>
   );
 }

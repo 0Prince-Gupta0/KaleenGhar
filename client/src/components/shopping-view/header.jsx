@@ -112,13 +112,14 @@ function HeaderRightContent() {
   const navigate = useNavigate();
   const [openCart, setOpenCart] = useState(false);
 
+  console.log(cartItems)
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchCartItems(user.id));
     }
   }, [user, dispatch]);
 
-  const cartCount = cartItems?.items?.length || 0;
+  const cartCount = cartItems?.length || 0;
 
   return (
     <div className="flex items-center gap-4">
@@ -140,7 +141,7 @@ function HeaderRightContent() {
           </Button>
 
           <UserCartWrapper
-            cartItems={cartItems?.items || []}
+            cartItems={cartItems || []}
             setOpenCartSheet={setOpenCart}
           />
         </Sheet>

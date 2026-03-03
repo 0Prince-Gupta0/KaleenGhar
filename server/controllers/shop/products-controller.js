@@ -1,10 +1,12 @@
 const Product = require("../../models/Product");
 
 const getFilteredProducts = async (req, res) => {
+  
   try {
     const {
       sortBy = "price-lowtohigh",
       search,
+      size,
       page = 1,
       limit = 50,
       ...rest
@@ -20,6 +22,17 @@ const getFilteredProducts = async (req, res) => {
         filters[key] = { $in: [rest[key]] };
       }
     });
+
+    if (size) {
+      const sizesArray = Array.isArray(size) ? size : size.split(",");
+console.log(sizesArray);
+      filters.sizes = {
+        $elemMatch: {
+          label: { $in: sizesArray },
+        },
+      };
+    }
+
 
     // Search filter
     if (search) {

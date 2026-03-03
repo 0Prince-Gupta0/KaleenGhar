@@ -78,16 +78,6 @@ export const addProductFormElements = [
     ],
   },
   {
-    label: "Size",
-    name: "size",
-    componentType: "select",
-    options: [
-      { id: "3x6", label: "3 x 6" },
-      { id: "5x7", label: "5 x 7" },
-      { id: "7x10", label: "7 x 10" },
-    ],
-  },
-  {
     label: "Shape",
     name: "shape",
     componentType: "select",
@@ -106,33 +96,11 @@ export const addProductFormElements = [
     ],
   },
   {
-    label: "Price",
-    name: "price",
-    componentType: "input",
-    type: "number",
-    placeholder: "Enter product price",
+    label: "Show on Home Page",
+    name: "isFeatured",
+    componentType: "switch",
+    defaultValue: false,
   },
-  {
-    label: "Sale Price",
-    name: "salePrice",
-    componentType: "input",
-    type: "number",
-    placeholder: "Enter sale price (optional)",
-  },
-  {
-    label: "Total Stock",
-    name: "totalStock",
-    componentType: "input",
-    type: "number",
-    placeholder: "Enter total stock",
-  },
-  {
-  label: "Show on Home Page",
-  name: "isFeatured",
-  componentType: "switch", // or "checkbox"
-  defaultValue: false,
-}
-
 ];
 
 // ================= SHOP HEADER MENU =================
@@ -184,9 +152,9 @@ export const filterOptions = {
     { id: "black", label: "Black" },
   ],
   size: [
-    { id: "3x6", label: "3 x 6" },
-    { id: "5x7", label: "5 x 7" },
-    { id: "7x10", label: "7 x 10" },
+    { id: "3X6", label: "3 x 6" },
+    { id: "5X7", label: "5 x 7" },
+    { id: "7X10", label: "7 x 10" },
   ],
   shape: [
     { id: "rectangle", label: "Rectangle" },
