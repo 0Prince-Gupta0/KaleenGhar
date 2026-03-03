@@ -112,7 +112,7 @@ function HeaderRightContent() {
   const navigate = useNavigate();
   const [openCart, setOpenCart] = useState(false);
 
-  console.log(cartItems)
+  //console.log(cartItems)
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchCartItems(user.id));

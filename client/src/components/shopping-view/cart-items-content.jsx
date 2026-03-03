@@ -16,7 +16,7 @@ function UserCartItemsContent({ cartItem }) {
   /* ================= INCREASE ================= */
   const handleIncrease = () => {
     if (!user?.id) return;
-console.log(quantity,maxStock);
+//console.log(quantity,maxStock);
     if (quantity >= maxStock) {
       toast({
         title: `Only ${maxStock} in stock`,

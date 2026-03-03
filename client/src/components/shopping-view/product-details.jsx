@@ -42,12 +42,12 @@ const navigate = useNavigate();
   }
 
   const items = cartItems || [];
-console.log(items);
+//console.log(items);
   const existing = items.find(
     (i) => i.productId === id
   );
 
-  console.log(existing);
+ // console.log(existing);
   if (
     existing &&
     existing.quantity + 1 > productDetails.totalStock

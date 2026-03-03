@@ -25,7 +25,7 @@ const getFilteredProducts = async (req, res) => {
 
     if (size) {
       const sizesArray = Array.isArray(size) ? size : size.split(",");
-console.log(sizesArray);
+//console.log(sizesArray);
       filters.sizes = {
         $elemMatch: {
           label: { $in: sizesArray },
