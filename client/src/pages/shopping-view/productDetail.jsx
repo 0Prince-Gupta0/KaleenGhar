@@ -18,7 +18,7 @@ function ProductDetailsPage() {
   const { toast } = useToast();
 
   const { productDetails } = useSelector((state) => state.shopProducts);
-  const { reviews = [] } = useSelector((state) => state.shopReview);
+  const { reviews = [] , isLoading, error} = useSelector((state) => state.shopReview);
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -115,23 +115,31 @@ function ProductDetailsPage() {
     toast({ title: "Added to cart", variant: "success" });
   });
 }
-  function handleAddReview() {
-    if (!rating || !reviewMsg) return;
-
-    dispatch(
+ const handleAddReview = async () => {
+  try {
+    const result = await dispatch(
       addReview({
-        productId: id,
+        productId:id,
         reviewMessage: reviewMsg,
         reviewValue: rating,
       })
-    ).then(() => {
-      dispatch(getReviews(id));
-      setRating(0);
-      setReviewMsg("");
-      setShowReviewForm(false);
-      toast({ title: "Review submitted", variant: "success" });
+    ).unwrap();
+
+    toast({
+      title: "Review added successfully",
+    });
+
+    setReviewMsg("");
+    setRating(0);
+    setShowReviewForm(false);
+
+  } catch (error) {
+    toast({
+      title: error?.message || "Error submitting review",
+      variant: "destructive",
     });
   }
+};
 
   if (!productDetails) return null;
 
@@ -340,107 +348,92 @@ function ProductDetailsPage() {
 </div>
 
       {/* ================= REVIEWS ================= */}
- <div className="space-y-14">
+<div className="max-w-5xl mx-auto space-y-12">
 
-  {/* ===== SECTION TITLE ===== */}
+  {/* ===== TITLE ===== */}
   <h2 className="text-2xl font-semibold text-center text-[#2E2E2E]">
     Customer Reviews
   </h2>
 
   {/* ===== SUMMARY ===== */}
-  <div className="grid md:grid-cols-3 gap-10 items-center border-b border-[#E7E2DA] pb-12">
+  <div className="grid md:grid-cols-3 gap-10 items-center border-b border-[#E7E2DA] pb-10">
 
     {/* AVG RATING */}
-    <div className="text-center space-y-2">
+    <div className="text-center space-y-3">
       <StarRatingComponent rating={avgRating} />
-      <p className="font-medium text-[#2E2E2E]">
+
+      <p className="text-lg font-medium text-[#2E2E2E]">
         {avgRating.toFixed(1)} out of 5
       </p>
+
       <p className="text-sm text-[#6B6B6B]">
-        {reviews.length} reviews
+        {reviews?.length || 0} reviews
       </p>
     </div>
 
-    {/* DISTRIBUTION */}
+
+    {/* ===== RATING DISTRIBUTION ===== */}
     <div className="space-y-2">
+
       {ratingCounts.map(({ star, count }) => (
         <div key={star} className="flex items-center gap-3">
-          <span className="w-6 text-sm text-[#2E2E2E]">{star}★</span>
+
+          <span className="w-6 text-sm">{star}★</span>
 
           <div className="flex-1 h-2 bg-[#E7E2DA] rounded">
+
             <div
               className="h-2 bg-[#C9A24D] rounded"
-              style={{ width: `${(count / totalReviews) * 100}%` }}
+              style={{
+                width:
+                  totalReviews > 0
+                    ? `${(count / totalReviews) * 100}%`
+                    : "0%",
+              }}
             />
-          </div>
 
-          <span className="text-xs text-[#6B6B6B]">{count}</span>
-        </div>
-      ))}
-    </div>
-
-    {/* CTA */}
-    <div className="text-center">
-      <Button
-        onClick={() => setShowReviewForm(prev => !prev)}
-        className="bg-[#4F6A73] hover:bg-[#3E565E] text-white rounded-full px-8 py-3"
-      >
-        Write a review
-      </Button>
-    </div>
-
-  </div>
-
-  {/* ===== EMPTY STATE ===== */}
-  {reviews.length === 0 && (
-    <div className="text-center py-14 space-y-2">
-      <p className="font-medium text-[#2E2E2E]">No reviews yet</p>
-      <p className="text-sm text-[#6B6B6B]">
-        Be the first to share your experience
-      </p>
-    </div>
-  )}
-
-  {/* ===== REVIEW LIST ===== */}
-  <div className="space-y-10">
-    {reviews.map(r => (
-      <div
-        key={r._id}
-        className="border-b border-[#E7E2DA] pb-8"
-      >
-        <div className="flex justify-between items-start">
-          
-          <div className="flex gap-4">
-            <Avatar>
-              <AvatarFallback>
-                {r.userName?.[0]?.toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-
-            <div>
-              <p className="font-medium text-[#2E2E2E]">
-                {r.userName}
-              </p>
-              <StarRatingComponent rating={r.reviewValue} />
-            </div>
           </div>
 
           <span className="text-xs text-[#6B6B6B]">
-            {new Date(r.createdAt || Date.now()).toLocaleDateString()}
+            {count}
           </span>
 
         </div>
+      ))}
 
-        <p className="mt-3 text-[#6B6B6B] leading-relaxed">
-          {r.reviewMessage}
+    </div>
+
+
+    {/* ===== CTA ===== */}
+    <div className="flex flex-col items-center gap-3">
+
+      {user ? (
+        <Button
+          onClick={() => setShowReviewForm(prev => !prev)}
+          className="bg-[#4F6A73] hover:bg-[#3E565E] text-white rounded-full px-8 py-3"
+        >
+          Write a review
+        </Button>
+      ) : (
+        <p className="text-sm text-[#6B6B6B] text-center">
+          Login to write a review
         </p>
-      </div>
-    ))}
+      )}
+
+    </div>
+
   </div>
+
+
 
   {/* ===== REVIEW FORM ===== */}
   {user && showReviewForm && (
-    <div className="mt-6 max-w-md space-y-4">
+
+    <div className="max-w-lg mx-auto p-6 border border-[#E7E2DA] rounded-xl shadow-sm space-y-4">
+
+      <p className="text-lg font-medium text-[#2E2E2E]">
+        Write your review
+      </p>
 
       <StarRatingComponent
         rating={rating}
@@ -455,13 +448,110 @@ function ProductDetailsPage() {
       />
 
       <Button
+        disabled={!rating || !reviewMsg}
         onClick={handleAddReview}
-        className="bg-[#C9A24D] hover:bg-[#B8953F] text-black font-medium"
+        className="bg-[#C9A24D] hover:bg-[#B8953F] text-black font-medium w-full"
       >
         Submit review
       </Button>
 
     </div>
+
+  )}
+
+
+
+  {/* ===== LOADING STATE ===== */}
+  {isLoading && (
+    <p className="text-center text-[#6B6B6B]">
+      Loading reviews...
+    </p>
+  )}
+
+
+
+  {/* ===== ERROR STATE ===== */}
+  {error && (
+    <p className="text-center text-red-500">
+      {error}
+    </p>
+  )}
+
+
+
+  {/* ===== EMPTY STATE ===== */}
+  {!isLoading && reviews?.length === 0 && (
+
+    <div className="text-center py-16 space-y-2">
+
+      <p className="font-medium text-[#2E2E2E]">
+        No reviews yet
+      </p>
+
+      <p className="text-sm text-[#6B6B6B]">
+        Be the first to share your experience
+      </p>
+
+    </div>
+
+  )}
+
+
+
+  {/* ===== REVIEW LIST ===== */}
+  {reviews?.length > 0 && (
+
+    <div className="space-y-8">
+
+      {reviews.map((r) => (
+
+        <div
+          key={r._id}
+          className="border-b border-[#E7E2DA] pb-6"
+        >
+
+          <div className="flex justify-between items-start">
+
+            <div className="flex gap-3">
+
+              <Avatar>
+                <AvatarFallback>
+                  {r.userName?.[0]?.toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+
+              <div>
+
+                <p className="font-medium text-[#2E2E2E]">
+                  {r.userName}
+                </p>
+
+                <StarRatingComponent
+                  rating={r.reviewValue}
+                />
+
+              </div>
+
+            </div>
+
+            <span className="text-xs text-[#6B6B6B]">
+              {new Date(
+                r.createdAt || Date.now()
+              ).toLocaleDateString()}
+            </span>
+
+          </div>
+
+          <p className="mt-3 text-[#6B6B6B]">
+            {r.reviewMessage}
+          </p>
+
+        </div>
+
+      ))}
+
+    </div>
+
   )}
 
 </div>

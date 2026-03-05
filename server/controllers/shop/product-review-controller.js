@@ -5,9 +5,15 @@ const ProductReview = require("../../models/Review");
 const addProductReview = async (req, res) => {
   try {
     const { productId, reviewMessage, reviewValue } = req.body;
-
-    const userId = req.user.id;        // ✅ from JWT
+    const userId = req.user.id;
     const userName = req.user.userName;
+
+    if (!productId || !reviewValue) {
+      return res.status(400).json({
+        success: false,
+        message: "Product and rating required",
+      });
+    }
 
     const order = await Order.findOne({
       userId,
@@ -40,15 +46,25 @@ const addProductReview = async (req, res) => {
     });
 
     const reviews = await ProductReview.find({ productId });
+
     const averageReview =
-      reviews.reduce((sum, r) => sum + r.reviewValue, 0) / reviews.length;
+      reviews.length > 0
+        ? reviews.reduce((sum, r) => sum + r.reviewValue, 0) / reviews.length
+        : 0;
 
     await Product.findByIdAndUpdate(productId, { averageReview });
 
-    res.status(201).json({ success: true, data: newReview });
+    res.status(201).json({
+      success: true,
+      data: newReview,
+    });
+
   } catch (e) {
     console.error(e);
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
   }
 };
 
