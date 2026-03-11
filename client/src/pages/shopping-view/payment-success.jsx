@@ -15,34 +15,39 @@ function PaymentSuccessPage() {
 
   const orderId = searchParams.get("orderId");
   const sessionId = searchParams.get("session_id");
+  const fromRazorpay = searchParams.get("from") === "razorpay";
 
-  // useEffect(() => {
-  //   if (!orderId || !sessionId) return;
+  useEffect(() => {
+    if (fromRazorpay) {
+      dispatch(clearCart());
+      return;
+    }
+    if (!orderId || !sessionId) return;
 
-  //   const verifyPayment = async () => {
-  //     try {
-  //       const res = await fetch(
-  //         `${BASE_URL}/api/shop/order/verify-payment`,
-  //         {
-  //           method: "POST",
-  //           headers: { "Content-Type": "application/json" },
-  //           body: JSON.stringify({ orderId, sessionId }),
-  //         }
-  //       );
+    const verifyPayment = async () => {
+      try {
+        const res = await fetch(
+          `${BASE_URL}/api/shop/order/verify-payment`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId, sessionId }),
+          }
+        );
 
-  //       const data = await res.json();
+        const data = await res.json();
 
-  //       if (data.success) {
-  //         // 🔥 THIS IS THE FIX
-  //         dispatch(clearCart());
-  //       }
-  //     } catch (err) {
-  //       console.error("Payment verification failed", err);
-  //     }
-  //   };
+        if (data.success) {
+          dispatch(clearCart());
+        }
+      } catch (err) {
+        console.error("Payment verification failed", err);
+      }
+    };
 
-  //   verifyPayment();
-  // }, [orderId, sessionId, dispatch]);
+    verifyPayment();
+  }, [orderId, sessionId, fromRazorpay, dispatch]);
 
   return (
     <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-[#FBF7F1] px-4">

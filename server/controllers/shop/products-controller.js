@@ -1,7 +1,6 @@
 const Product = require("../../models/Product");
 
 const getFilteredProducts = async (req, res) => {
-  
   try {
     const {
       sortBy = "price-lowtohigh",
@@ -12,6 +11,7 @@ const getFilteredProducts = async (req, res) => {
       ...rest
     } = req.query;
 
+    const safeLimit = Math.min(Math.max(Number(limit) || 50, 1), 100);
     const filters = {};
 
     // Apply filters
@@ -25,14 +25,12 @@ const getFilteredProducts = async (req, res) => {
 
     if (size) {
       const sizesArray = Array.isArray(size) ? size : size.split(",");
-//console.log(sizesArray);
       filters.sizes = {
         $elemMatch: {
           label: { $in: sizesArray },
         },
       };
     }
-
 
     // Search filter
     if (search) {
@@ -42,43 +40,73 @@ const getFilteredProducts = async (req, res) => {
       ];
     }
 
-    // Sorting
-    let sort = {};
-    switch (sortBy) {
-      case "price-lowtohigh":
-        sort.price = 1;
-        break;
-      case "price-hightolow":
-        sort.price = -1;
-        break;
-      case "title-atoz":
-        sort.title = 1;
-        break;
-      case "title-ztoa":
-        sort.title = -1;
-        break;
-      default:
-        sort.price = 1;
+    const skip = (Number(page) - 1) * safeLimit;
+
+    const isPriceSort =
+      sortBy === "price-lowtohigh" || sortBy === "price-hightolow";
+
+    let products;
+    let totalProducts;
+
+    if (isPriceSort) {
+      const sortDir = sortBy === "price-lowtohigh" ? 1 : -1;
+      const pipeline = [
+        { $match: filters },
+        {
+          $addFields: {
+            minPrice: {
+              $min: {
+                $map: {
+                  input: "$sizes",
+                  as: "s",
+                  in: {
+                    $cond: [
+                      { $gt: [{ $ifNull: ["$$s.salePrice", 0] }, 0] },
+                      "$$s.salePrice",
+                      "$$s.price",
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+        { $sort: { minPrice: sortDir } },
+        { $skip: skip },
+        { $limit: safeLimit },
+      ];
+      const [aggResult, countResult] = await Promise.all([
+        Product.aggregate(pipeline),
+        Product.countDocuments(filters),
+      ]);
+      products = aggResult;
+      totalProducts = countResult;
+    } else {
+      let sort = {};
+      switch (sortBy) {
+        case "title-atoz":
+          sort.title = 1;
+          break;
+        case "title-ztoa":
+          sort.title = -1;
+          break;
+        default:
+          sort.title = 1;
+      }
+      [products, totalProducts] = await Promise.all([
+        Product.find(filters).sort(sort).skip(skip).limit(safeLimit),
+        Product.countDocuments(filters),
+      ]);
     }
-
-    const skip = (Number(page) - 1) * Number(limit);
-
-    // Total count (important for pagination UI)
-    const totalProducts = await Product.countDocuments(filters);
-
-    const products = await Product.find(filters)
-      .sort(sort)
-      .skip(skip)
-      .limit(Number(limit));
 
     res.status(200).json({
       success: true,
       data: products,
       pagination: {
         currentPage: Number(page),
-        totalPages: Math.ceil(totalProducts / limit),
+        totalPages: Math.ceil(totalProducts / safeLimit),
         totalProducts,
-        limit: Number(limit),
+        limit: safeLimit,
       },
     });
   } catch (error) {

@@ -44,9 +44,12 @@ const fetchFeaturedProducts = async () => {
 };
 
 useEffect(() => {
-  fetch(`${import.meta.env.VITE_BACKEND_URL}/api/common/hero`)
-    .then((res) => res.json())
-    .then((data) => setHero(data));
+  fetch(`${import.meta.env.VITE_BACKEND_URL}/api/common/hero`, {
+    credentials: "include",
+  })
+    .then((res) => res.ok ? res.json() : Promise.reject(new Error("Failed to fetch")))
+    .then((data) => setHero(data))
+    .catch((err) => console.error("Hero fetch failed:", err));
 }, []);
   /* -------------------- CAROUSEL -------------------- */
   function startAutoSlide() {
@@ -68,8 +71,8 @@ useEffect(() => {
   }
 
   /* -------------------- ADD TO CART -------------------- */
-  function handleAddtoCart(productId) {
-     if (!user) {
+  function handleAddtoCart(product) {
+    if (!user) {
       toast({
         title: "Login required",
         description: "Please login to add items to your cart",
@@ -78,17 +81,36 @@ useEffect(() => {
       navigate("/auth/login");
       return;
     }
+    const productId = typeof product === "string" ? product : product?._id;
+    const size = product?.sizes?.[0]?.label;
+    if (!productId || !size) {
+      toast({
+        title: "Select size",
+        description: "Please open the product to choose a size",
+        variant: "destructive",
+      });
+      navigate(`/shop/product/${productId}`);
+      return;
+    }
     dispatch(
       addToCart({
         userId: user?.id,
         productId,
+        size,
         quantity: 1,
       })
     ).then((res) => {
       if (res?.payload?.success) {
         dispatch(fetchCartItems(user?.id));
-        toast({ title: "Added to cart" , variant: "success",});
+        toast({ title: "Added to cart", variant: "success" });
+      } else {
+        toast({
+          title: res?.payload?.message || "Failed to add to cart",
+          variant: "destructive",
+        });
       }
+    }).catch(() => {
+      toast({ title: "Failed to add to cart", variant: "destructive" });
     });
   }
 
@@ -164,8 +186,8 @@ useEffect(() => {
         <Button
           variant="outline"
           size="icon"
+          aria-label="Previous slide"
           onClick={() =>{
-             // console.log("-");
             setCurrentSlide(
               (prev) =>
                 (prev - 1 + featureImageList.length) %
@@ -181,8 +203,8 @@ useEffect(() => {
         <Button
           variant="outline"
           size="icon"
+          aria-label="Next slide"
           onClick={() =>{
-            // console.log("+");
             setCurrentSlide(
               (prev) => (prev + 1) % featureImageList.length
             )

@@ -22,8 +22,10 @@ exports.createOrder = async (req, res) => {
       receipt: `rcpt_${Date.now()}`,
     });
 
+    const userId = req.user?.id || address?.userId;
+
     const order = await Order.create({
-      userId: address.userId,
+      userId,
       orderId: razorpayOrder.id,
       cartItems,
       totalAmount: amount,

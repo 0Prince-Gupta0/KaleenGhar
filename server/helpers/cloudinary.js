@@ -17,6 +17,17 @@ async function imageUploadUtil(file) {
   return result;
 }
 
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = /^image\/(jpeg|jpg|png|gif|webp)$/i;
+    if (allowed.test(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image files are allowed"), false);
+    }
+  },
+});
 
 module.exports = { upload, imageUploadUtil };

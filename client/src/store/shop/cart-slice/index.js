@@ -24,7 +24,7 @@ const mapCartItems = (items = []) =>
         selectedSize?.price ||
         item.price ||
         0,
-      stock: selectedSize?.totalStock || 0,   // ✅ ADD THIS
+      stock: selectedSize?.stock ?? item.stock ?? 0,
       quantity: item.quantity,
     };
   });
@@ -37,7 +37,7 @@ export const addToCart = createAsyncThunk(
       productId,
       size,
       quantity,
-    });
+    }, { withCredentials: true });
     return res.data;
   }
 );
@@ -47,7 +47,8 @@ export const fetchCartItems = createAsyncThunk(
   "cart/fetchCartItems",
   async (userId) => {
     const res = await axios.get(
-      `${BASE_URL}/api/shop/cart/get/${userId}`
+      `${BASE_URL}/api/shop/cart/get/${userId}`,
+      { withCredentials: true }
     );
     return res.data;
   }
@@ -59,7 +60,8 @@ export const updateCartQuantity = createAsyncThunk(
   async ({ userId, productId, size, quantity }) => {
     const res = await axios.put(
       `${BASE_URL}/api/shop/cart/update-cart`,
-      { userId, productId, size, quantity }
+      { userId, productId, size, quantity },
+      { withCredentials: true }
     );
     return res.data;
   }
@@ -70,7 +72,8 @@ export const deleteCartItem = createAsyncThunk(
   "cart/deleteCartItem",
   async ({ userId, productId, size }) => {
     const res = await axios.delete(
-      `${BASE_URL}/api/shop/cart/${userId}/${productId}/${size}`
+      `${BASE_URL}/api/shop/cart/${userId}/${productId}/${size}`,
+      { withCredentials: true }
     );
     return res.data;
   }

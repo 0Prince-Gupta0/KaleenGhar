@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import AddressDialog from "@/components/shopping-view/addressDialog";
 import SavedAddresses from "@/components/shopping-view/savedAddresses";
 import { deleteAddress, fetchAllAddresses } from "@/store/shop/address-slice";
+import { clearCart } from "@/store/shop/cart-slice";
 import EditAddressDialog from "@/components/shopping-view/editAddressDialog";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
@@ -98,14 +99,12 @@ return toast({ title: "Cart is empty", variant: "destructive" });
 
   const res = await fetch(`${BASE_URL}/api/payment/create-order`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${user.token}`,
-    },
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       amount: totalCartAmount,
       cartItems,
-      address: currentSelectedAddress,
+      address: { ...currentSelectedAddress, userId: user?.id },
     }),
   });
 
@@ -129,6 +128,7 @@ return toast({ title: "Cart is empty", variant: "destructive" });
         `${BASE_URL}/api/payment/verify`,
         {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(response),
         }
@@ -138,7 +138,8 @@ return toast({ title: "Cart is empty", variant: "destructive" });
 
       if (verifyData.success) {
         toast({ title: "Payment Successful 🎉" });
-        window.location.href = "/shop/payment-success";
+        dispatch(clearCart());
+        window.location.href = "/shop/payment-success?from=razorpay";
       } else {
         toast({
           title: "Verification failed",

@@ -17,7 +17,8 @@ export const createNewOrder = createAsyncThunk(
   async (orderData) => {
     const response = await axios.post(
       `${BASE_URL}/api/shop/order/create`,
-      orderData
+      orderData,
+      { withCredentials: true }
     );
     return response.data;
   }
@@ -29,7 +30,8 @@ export const createStripeCheckoutSession = createAsyncThunk(
   async ({ cartItems, orderId }) => {
     const response = await axios.post(
       `${BASE_URL}/api/shop/stripe/create-checkout-session`,
-      { cartItems, orderId }
+      { cartItems, orderId },
+      { withCredentials: true }
     );
     return response.data;
   }
@@ -40,7 +42,8 @@ export const getAllOrdersByUserId = createAsyncThunk(
   "/order/getAllOrdersByUserId",
   async (userId) => {
     const response = await axios.get(
-      `${BASE_URL}/api/shop/order/list/${userId}`
+      `${BASE_URL}/api/shop/order/list/${userId}`,
+      { withCredentials: true }
     );
     return response.data;
   }
@@ -50,7 +53,8 @@ export const getOrderDetails = createAsyncThunk(
   "/order/getOrderDetails",
   async (id) => {
     const response = await axios.get(
-      `${BASE_URL}/api/shop/order/details/${id}`
+      `${BASE_URL}/api/shop/order/details/${id}`,
+      { withCredentials: true }
     );
     return response.data;
   }

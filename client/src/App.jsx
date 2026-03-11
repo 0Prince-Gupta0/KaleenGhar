@@ -25,6 +25,7 @@ import ProductDetailsPage from "./pages/shopping-view/productDetail";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 
 import CheckAuth from "./components/common/check-auth";
+import ErrorBoundary from "./components/common/error-boundary";
 import UnauthPage from "./pages/unauth-page";
 import NotFound from "./pages/not-found";
 
@@ -44,8 +45,9 @@ function App() {
   if (isLoading) return <Skeleton className="w-full h-screen" />;
 
   return (
-    <TooltipProvider delayDuration={200}>
-      <Routes>
+    <ErrorBoundary>
+      <TooltipProvider delayDuration={200}>
+        <Routes>
 
         {/* ✅ FIXED ROOT ROUTE */}
         <Route
@@ -111,8 +113,9 @@ function App() {
         <Route path="/shop/payment-success" element={<PaymentSuccessPage />} />
         <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />
-      </Routes>
-    </TooltipProvider>
+        </Routes>
+      </TooltipProvider>
+    </ErrorBoundary>
   );
 }
 

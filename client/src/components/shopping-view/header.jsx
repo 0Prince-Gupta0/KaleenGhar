@@ -153,7 +153,7 @@ function HeaderRightContent() {
           <button className="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-[#F5EFE6]">
             <Avatar className="h-9 w-9 bg-black">
               <AvatarFallback className="text-white font-semibold">
-                {user ? user.userName[0].toUpperCase() : "G"}
+                {user?.userName?.[0]?.toUpperCase() ?? "G"}
               </AvatarFallback>
             </Avatar>
 

@@ -1,5 +1,5 @@
 const express = require("express");
-
+const { authMiddleware, adminMiddleware } = require("../../controllers/auth/auth-controller");
 const {
   getAllOrdersOfAllUsers,
   getOrderDetailsForAdmin,
@@ -7,6 +7,8 @@ const {
 } = require("../../controllers/admin/order-controller");
 
 const router = express.Router();
+
+router.use(authMiddleware, adminMiddleware);
 
 router.get("/get", getAllOrdersOfAllUsers);
 router.get("/details/:id", getOrderDetailsForAdmin);

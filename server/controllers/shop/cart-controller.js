@@ -45,7 +45,8 @@ const buildCartResponse = async (cart) => {
 /* ================= ADD ================= */
 const addToCart = async (req, res) => {
   try {
-    const { userId, productId, size, quantity } = req.body;
+    const userId = req.user?.id;
+    const { productId, size, quantity } = req.body;
 
     if (!userId || !productId || !size || quantity <= 0) {
       return res.status(400).json({
@@ -90,7 +91,7 @@ const addToCart = async (req, res) => {
 /* ================= FETCH ================= */
 const fetchCartItems = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user?.id || req.params.userId;
 
     const cart = await Cart.findOne({ userId });
     if (!cart)
@@ -111,7 +112,8 @@ const fetchCartItems = async (req, res) => {
 /* ================= UPDATE ================= */
 const updateCartItemQty = async (req, res) => {
   try {
-    const { userId, productId, size, quantity } = req.body;
+    const userId = req.user?.id;
+    const { productId, size, quantity } = req.body;
 
     if (!userId || !productId || !size || quantity <= 0)
       return res.status(400).json({
@@ -153,7 +155,8 @@ const updateCartItemQty = async (req, res) => {
 /* ================= DELETE ================= */
 const deleteCartItem = async (req, res) => {
   try {
-    const { userId, productId, size } = req.params;
+    const userId = req.user?.id || req.params.userId;
+    const { productId, size } = req.params;
 
     const cart = await Cart.findOne({ userId });
     if (!cart)
