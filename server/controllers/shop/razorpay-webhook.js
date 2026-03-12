@@ -1,10 +1,15 @@
 const crypto = require("crypto");
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
+const Product = require("../../models/Product");
 
 exports.razorpayWebhook = async (req, res) => {
   try {
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+    if (!secret) {
+      console.error("RAZORPAY_WEBHOOK_SECRET is not set");
+      return res.status(500).json({ success: false });
+    }
 
     const signature = req.headers["x-razorpay-signature"];
 
@@ -36,6 +41,18 @@ exports.razorpayWebhook = async (req, res) => {
       );
 
       if (order) {
+        for (const item of order.cartItems || []) {
+          const product = await Product.findById(item.productId);
+          if (product && product.sizes?.length) {
+            const sizeObj = item.size
+              ? product.sizes.find((s) => s.label === item.size)
+              : product.sizes[0];
+            if (sizeObj && sizeObj.stock !== undefined) {
+              sizeObj.stock = Math.max(0, (sizeObj.stock || 0) - item.quantity);
+              await product.save();
+            }
+          }
+        }
         await Cart.findOneAndDelete({
           userId: order.userId,
         });

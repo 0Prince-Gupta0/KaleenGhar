@@ -5,29 +5,30 @@ const Product = require("../../models/Product");
 /* ================= CREATE ORDER (NO PAYMENT) ================= */
 const createOrder = async (req, res) => {
   try {
+    const userId = req.user?.id || req.body.userId;
     const {
-      userId,
       cartId,
       cartItems,
       addressInfo,
-      paymentMethod,
-      paymentStatus,
       totalAmount,
       orderDate,
       orderUpdateDate,
     } = req.body;
 
+    const orderId = `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+
     const order = new Order({
       userId,
       cartId,
+      orderId,
       cartItems,
       addressInfo,
       paymentMethod: "stripe",
       paymentStatus: "pending",
       orderStatus: "pending",
       totalAmount,
-      orderDate,
-      orderUpdateDate,
+      orderDate: orderDate || new Date(),
+      orderUpdateDate: orderUpdateDate || new Date(),
     });
 
     await order.save();
@@ -48,7 +49,7 @@ const createOrder = async (req, res) => {
 /* ================= USER ORDERS ================= */
 const getAllOrdersByUser = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user?.id || req.params.userId;
 
     const orders = await Order.find({ userId }).sort({
       createdAt: -1,
@@ -70,6 +71,7 @@ const getAllOrdersByUser = async (req, res) => {
 const getOrderDetails = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.user?.id;
 
     const order = await Order.findById(id);
 
@@ -77,6 +79,13 @@ const getOrderDetails = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Order not found",
+      });
+    }
+
+    if (userId && order.userId.toString() !== userId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied",
       });
     }
 

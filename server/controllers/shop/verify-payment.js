@@ -29,12 +29,17 @@ const verifyPayment = async (req, res) => {
   order.paymentStatus = "paid";
   order.orderStatus = "confirmed";
 
-  // ✅ UPDATE STOCK
+  // ✅ UPDATE STOCK (per-size)
   for (const item of order.cartItems) {
     const product = await Product.findById(item.productId);
-    if (product) {
-      product.totalStock -= item.quantity;
-      await product.save();
+    if (product && product.sizes?.length) {
+      const sizeObj = item.size
+        ? product.sizes.find((s) => s.label === item.size)
+        : product.sizes[0];
+      if (sizeObj && sizeObj.stock !== undefined) {
+        sizeObj.stock = Math.max(0, (sizeObj.stock || 0) - item.quantity);
+        await product.save();
+      }
     }
   }
 

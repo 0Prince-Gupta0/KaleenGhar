@@ -1,5 +1,5 @@
 const express = require("express");
-
+const { authMiddleware, adminMiddleware } = require("../../controllers/auth/auth-controller");
 const {
   addFeatureImage,
   getFeatureImages,
@@ -8,8 +8,8 @@ const {
 
 const router = express.Router();
 
-router.post("/add", addFeatureImage);
 router.get("/get", getFeatureImages);
-router.delete("/delete/:id",deleteFeatureImage);
+router.post("/add", authMiddleware, adminMiddleware, addFeatureImage);
+router.delete("/delete/:id", authMiddleware, adminMiddleware, deleteFeatureImage);
 
 module.exports = router;

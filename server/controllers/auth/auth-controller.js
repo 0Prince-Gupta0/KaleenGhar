@@ -8,7 +8,7 @@ const registerUser = async (req, res) => {
   try {
     const checkUser = await User.findOne({ email });
     if (checkUser)
-      return res.json({
+      return res.status(400).json({
         success: false,
         message: "User Already exists with the same email! Please try again",
       });
@@ -41,12 +41,12 @@ const loginUser = async (req, res) => {
   try {
     const checkUser = await User.findOne({ email });
     if (!checkUser)
-      return res.json({
+      return res.status(401).json({
         success: false,
         message: "User doesn't exists! Please register first",
       });
 if (checkUser.authProvider === "google") {
-  return res.json({
+  return res.status(401).json({
     success: false,
     message: "Please login using Google",
   });
@@ -57,7 +57,7 @@ if (checkUser.authProvider === "google") {
       checkUser.password
     );
     if (!checkPasswordMatch)
-      return res.json({
+      return res.status(401).json({
         success: false,
         message: "Incorrect password! Please try again",
       });
@@ -128,6 +128,16 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
+const adminMiddleware = (req, res, next) => {
+  if (!req.user || req.user.role !== "admin") {
+    return res.status(403).json({
+      success: false,
+      message: "Admin access required",
+    });
+  }
+  next();
+};
+
 const googleLogin = async (req, res) => {
 //console.log("Google login API hit");
 //console.log(req.body);
@@ -186,4 +196,4 @@ const googleLogin = async (req, res) => {
 };
 
 
-module.exports = { registerUser, loginUser, logoutUser, authMiddleware, googleLogin };
+module.exports = { registerUser, loginUser, logoutUser, authMiddleware, adminMiddleware, googleLogin };
