@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
 const initialState = {
   isLoading: false,
   productList: [],
@@ -16,6 +18,7 @@ export const addNewProduct = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true,
       }
     );
 
@@ -27,7 +30,10 @@ export const fetchAllProducts = createAsyncThunk(
   "/products/fetchAllProducts",
   async () => {
     const result = await axios.get(
-      `${BASE_URL}/api/admin/products/get`
+      `${BASE_URL}/api/admin/products/get`,
+      {
+        withCredentials: true,
+      }
     );
 
     return result?.data;
@@ -44,6 +50,7 @@ export const editProduct = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true,
       }
     );
 
@@ -55,7 +62,10 @@ export const deleteProduct = createAsyncThunk(
   "/products/deleteProduct",
   async (id) => {
     const result = await axios.delete(
-      `${BASE_URL}/api/admin/products/delete/${id}`
+      `${BASE_URL}/api/admin/products/delete/${id}`,
+      {
+        withCredentials: true,
+      }
     );
 
     return result?.data;
@@ -75,7 +85,7 @@ const AdminProductsSlice = createSlice({
         state.isLoading = false;
         state.productList = action.payload.data;
       })
-      .addCase(fetchAllProducts.rejected, (state, action) => {
+      .addCase(fetchAllProducts.rejected, (state) => {
         state.isLoading = false;
         state.productList = [];
       });

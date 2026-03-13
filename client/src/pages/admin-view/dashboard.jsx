@@ -81,22 +81,20 @@ function AdminDashboard() {
 
   /* ================= SAVE HERO ================= */
   const handleSaveHero = async () => {
-    try {
-      await axios.put(
-        `${BASE_URL}/api/common/hero`,
-        hero,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+  try {
+    await axios.put(
+      `${BASE_URL}/api/common/hero`,
+      hero,
+      {
+        withCredentials: true
+      }
+    );
 
-      toast({ title: "Hero content updated", variant: "success" });
-    } catch {
-      toast({ title: "Only admin can update", variant: "destructive" });
-    }
-  };
+    toast({ title: "Hero content updated", variant: "success" });
+  } catch {
+    toast({ title: "Only admin can update", variant: "destructive" });
+  }
+};
 
   /* ================= UI ================= */
   return (

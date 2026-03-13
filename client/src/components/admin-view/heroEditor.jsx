@@ -32,30 +32,19 @@ function HeroEditor() {
   }, []);
 
   /* ================= SAVE HERO ================= */
-  const handleSave = async () => {
-    try {
-      setLoading(true);
+const handleSave = async () => {
+  try {
+    await axios.put(
+      `${BASE_URL}/api/common/hero`,
+      hero,
+      { withCredentials: true }
+    );
 
-      await axios.put(
-        `${BASE_URL}/api/common/hero`,
-        hero,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      toast({ title: "Hero content updated", variant: "success" });
-    } catch (err) {
-      toast({
-        title: "Only admins can update hero",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+    toast({ title: "Hero content updated", variant: "success" });
+  } catch {
+    toast({ title: "Only admin can update", variant: "destructive" });
+  }
+};
 
   return (
     <div className="bg-white rounded-xl border p-6 max-w-2xl">
