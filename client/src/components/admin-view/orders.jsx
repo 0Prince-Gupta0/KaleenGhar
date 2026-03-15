@@ -51,15 +51,13 @@ function AdminOrdersView() {
         status === "all" || order.orderStatus === status;
 
       const matchPayment =
-        payment === "all" ||
-        order.paymentStatus === payment;
+        payment === "all" || order.paymentStatus === payment;
 
       return matchSearch && matchStatus && matchPayment;
     });
   }, [orderList, search, status, payment]);
 
   const openDetails = (id) => {
-    // console.log(id);
     dispatch(getOrderDetailsForAdmin(id)).then(() =>
       setOpen(true)
     );
@@ -72,24 +70,24 @@ function AdminOrdersView() {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
         <Card className="rounded-2xl bg-[#FFFCF7]">
           <CardHeader className="border-b">
-            <CardTitle className="text-xl font-semibold">
+            <CardTitle className="text-lg sm:text-xl font-semibold">
               Orders Management
             </CardTitle>
 
-            {/* 🔍 SEARCH & FILTERS */}
-            <div className="flex flex-wrap gap-3 mt-4">
+            {/* SEARCH & FILTERS */}
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-4">
               <Input
                 placeholder="Search Order ID or Amount"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-[260px]"
+                className="w-full sm:w-[260px]"
               />
 
               <select
-                className="border rounded-md px-3 py-2"
+                className="border rounded-md px-3 py-2 w-full sm:w-auto"
                 value={payment}
                 onChange={(e) => setPayment(e.target.value)}
               >
@@ -99,7 +97,7 @@ function AdminOrdersView() {
               </select>
 
               <select
-                className="border rounded-md px-3 py-2"
+                className="border rounded-md px-3 py-2 w-full sm:w-auto"
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
               >
@@ -113,10 +111,10 @@ function AdminOrdersView() {
             </div>
           </CardHeader>
 
-          {/* 📋 TABLE */}
+          {/* TABLE */}
           <CardContent className="p-0">
-            <div className="max-h-[70vh] overflow-y-auto">
-              <Table>
+            <div className="overflow-x-auto">
+              <Table className="min-w-[650px]">
                 <TableHeader className="sticky top-0 bg-[#F5EFE6]">
                   <TableRow>
                     <TableHead>Order ID</TableHead>
@@ -140,7 +138,7 @@ function AdminOrdersView() {
                             : "bg-[#FAF6EF]"
                         }
                       >
-                        <TableCell className="font-mono text-xs">
+                        <TableCell className="font-mono text-[10px] sm:text-xs break-all">
                           {order._id}
                         </TableCell>
 
@@ -172,13 +170,14 @@ function AdminOrdersView() {
                           )}
                         </TableCell>
 
-                        <TableCell className="font-semibold">
+                        <TableCell className="font-semibold whitespace-nowrap">
                           ₹{order.totalAmount}
                         </TableCell>
 
                         <TableCell className="text-right">
                           <Button
                             size="sm"
+                            className="text-xs sm:text-sm"
                             onClick={() =>
                               openDetails(order._id)
                             }
@@ -205,7 +204,7 @@ function AdminOrdersView() {
         </Card>
       </div>
 
-      {/* 🧾 DETAILS */}
+      {/* DETAILS */}
       <Dialog open={open} onOpenChange={closeDetails}>
         {orderDetails && (
           <AdminOrderDetailsView

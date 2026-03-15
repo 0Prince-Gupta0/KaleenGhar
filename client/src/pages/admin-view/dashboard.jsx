@@ -56,17 +56,21 @@ function AdminDashboard() {
   }, [dispatch]);
 
   /* ================= IMAGE UPLOAD ================= */
-  const handleUploadFeatureImage = () => {
-    if (!uploadedImageUrl || imageLoadingState) return;
+ const handleUploadFeatureImage = () => {
+  if (!uploadedImageUrl || imageLoadingState) return;
 
-    dispatch(addFeatureImage(uploadedImageUrl)).then((res) => {
-      if (res?.payload?.success) {
-        dispatch(getFeatureImages());
-        setUploadedImageUrl("");
-        toast({ title: "Feature image added", variant: "success" });
-      }
-    });
-  };
+  dispatch(addFeatureImage(uploadedImageUrl)).then((res) => {
+    if (res?.payload?.success) {
+      dispatch(getFeatureImages());
+
+      setUploadedImageUrl("");
+      setImageFile(null);
+      setImageLoadingState(false);
+
+      toast({ title: "Feature image added", variant: "success" });
+    }
+  });
+};
 
   const handleDeleteFeatureImage = (id) => {
     if (!window.confirm("Delete this image?")) return;
@@ -136,12 +140,12 @@ function AdminDashboard() {
               />
 
               <Button
-                onClick={handleUploadFeatureImage}
-                disabled={!uploadedImageUrl}
-                className="w-full"
-              >
-                Save Feature Image
-              </Button>
+  onClick={handleUploadFeatureImage}
+  disabled={!uploadedImageUrl || imageLoadingState}
+  className="w-full"
+>
+  {imageLoadingState ? "Uploading..." : "Save Feature Image"}
+</Button>
             </CardContent>
           </Card>
 
