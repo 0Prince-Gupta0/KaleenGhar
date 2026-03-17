@@ -30,6 +30,12 @@ import UnauthPage from "./pages/unauth-page";
 import NotFound from "./pages/not-found";
 
 import { checkAuth } from "./store/auth-slice";
+import About from "./pages/shopping-view/about";
+import Contact from "./pages/shopping-view/contact";
+import PrivacyPolicy from "./pages/shopping-view/privacyPolicy";
+import Terms from "./pages/shopping-view/terms";
+import ShippingPolicy from "./pages/shopping-view/shippingPolicy";
+import ReturnRefundPolicy from "./pages/shopping-view/returnRefundPolicy";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -109,7 +115,12 @@ function App() {
             }
           />
         </Route>
-
+ <Route path="/about" element={<About />} />
+ <Route path="/contact" element={<Contact />} />
+  <Route path="/privacy" element={<PrivacyPolicy />} />
+   <Route path="/terms" element={<Terms />} />
+      <Route path="/shipping-policy" element={<ShippingPolicy />} />
+         <Route path="/return-refund-policy" element={<ReturnRefundPolicy />} />
         <Route path="/shop/payment-success" element={<PaymentSuccessPage />} />
         <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />

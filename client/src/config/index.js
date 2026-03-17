@@ -63,8 +63,14 @@ export const addProductFormElements = [
     name: "category",
     componentType: "select",
     options: [
-      { id: "handtufedCarpet", label: "Hand Tufted Carpet" },
+       { id: "iraniPersian", label: "Irani Persian" },
+      { id: "iraniBambooSilk", label: "Irani Bamboo Silk" },
+      { id: "turkeyPersianGeometrical", label: "Turkey Persian & Geometrical" },
+      { id: "indianPersianGeometrical", label: "Indian Persian & Geometrical" },
+      { id: "handTufted", label: "Hand Tufted" },
+      { id: "importedRabbitFur", label: "Imported Rabbit Fur" },
       { id: "shaggyCarpet", label: "Shaggy Carpet" },
+      { id: "doormat", label: "Doormat" },
     ],
   },
   {
@@ -72,9 +78,15 @@ export const addProductFormElements = [
     name: "color",
     componentType: "select",
     options: [
-      { id: "red", label: "Red" },
+       { id: "red", label: "Red" },
+      { id: "cream", label: "Cream" },
       { id: "blue", label: "Blue" },
+      { id: "beige", label: "Beige" },
+      { id: "grey", label: "Grey" },
       { id: "black", label: "Black" },
+      { id: "yellow", label: "Yellow" },
+      { id: "candyBrown", label: "Candy Brown" },
+      { id: "brown", label: "Brown" },
     ],
   },
   {
@@ -82,8 +94,10 @@ export const addProductFormElements = [
     name: "shape",
     componentType: "select",
     options: [
-      { id: "rectangle", label: "Rectangle" },
+      { id: "round", label: "Round" },
       { id: "square", label: "Square" },
+      { id: "rectangle", label: "Rectangle" },
+      { id: "oval", label: "Oval" },
     ],
   },
   {
@@ -91,8 +105,10 @@ export const addProductFormElements = [
     name: "material",
     componentType: "select",
     options: [
-      { id: "wool", label: "Wool" },
-      { id: "silk", label: "Silk" },
+     { id: "silk", label: "Silk" },
+      { id: "acrylic", label: "Acrylic" },
+      { id: "woolen", label: "Woolen" },
+      { id: "polypropylene", label: "Polypropylene" },
     ],
   },
   {
@@ -143,26 +159,58 @@ export const shoppingViewHeaderMenuItems = [
 
 export const filterOptions = {
   category: [
-    { id: "handtufedCarpet", label: "Hand Tufted Carpet" },
+    { id: "iraniPersian", label: "Irani Persian" },
+    { id: "iraniBambooSilk", label: "Irani Bamboo Silk" },
+    { id: "turkeyPersianGeometrical", label: "Turkey Persian & Geometrical" },
+    { id: "indianPersianGeometrical", label: "Indian Persian & Geometrical" },
+    { id: "handTufted", label: "Hand Tufted" },
+    { id: "importedRabbitFur", label: "Imported Rabbit Fur" },
     { id: "shaggyCarpet", label: "Shaggy Carpet" },
+    { id: "doormat", label: "Doormat" },
   ],
+
   color: [
     { id: "red", label: "Red" },
+    { id: "cream", label: "Cream" },
     { id: "blue", label: "Blue" },
+    { id: "beige", label: "Beige" },
+    { id: "grey", label: "Grey" },
     { id: "black", label: "Black" },
+    { id: "yellow", label: "Yellow" },
+    { id: "candyBrown", label: "Candy Brown" },
+    { id: "brown", label: "Brown" },
   ],
+
   size: [
-    { id: "3X6", label: "3 x 6" },
-    { id: "5X7", label: "5 x 7" },
-    { id: "7X10", label: "7 x 10" },
+    { id: "2x4", label: "2 x 4" },
+    { id: "2x5", label: "2 x 5" },
+    { id: "2x6", label: "2 x 6" },
+    { id: "3x5", label: "3 x 5" },
+    { id: "4x4", label: "4 x 4" },
+    { id: "4x6", label: "4 x 6" },
+    { id: "5x5", label: "5 x 5" },
+    { id: "5x7", label: "5 x 7" },
+    { id: "6x6", label: "6 x 6" },
+    { id: "6x8", label: "6 x 8" },
+    { id: "6x9", label: "6 x 9" },
+    { id: "8x11", label: "8 x 11" },
+    { id: "9x12", label: "9 x 12" },
+    { id: "10x13", label: "10 x 13" },
+    { id: "12x15", label: "12 x 15" },
   ],
+
   shape: [
-    { id: "rectangle", label: "Rectangle" },
+    { id: "round", label: "Round" },
     { id: "square", label: "Square" },
+    { id: "rectangle", label: "Rectangle" },
+    { id: "oval", label: "Oval" },
   ],
+
   material: [
-    { id: "wool", label: "Wool" },
     { id: "silk", label: "Silk" },
+    { id: "acrylic", label: "Acrylic" },
+    { id: "woolen", label: "Woolen" },
+    { id: "polypropylene", label: "Polypropylene" },
   ],
 };
 
