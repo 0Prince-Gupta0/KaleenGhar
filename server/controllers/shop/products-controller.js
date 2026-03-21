@@ -12,6 +12,7 @@ const getFilteredProducts = async (req, res) => {
     } = req.query;
 
     const safeLimit = Math.min(Math.max(Number(limit) || 50, 1), 100);
+    const safePage = Math.max(1, Number(page) || 1);
     const filters = {};
 
     // Apply filters
@@ -40,7 +41,7 @@ const getFilteredProducts = async (req, res) => {
       ];
     }
 
-    const skip = (Number(page) - 1) * safeLimit;
+    const skip = (safePage - 1) * safeLimit;
 
     const isPriceSort =
       sortBy === "price-lowtohigh" || sortBy === "price-hightolow";
@@ -103,7 +104,7 @@ const getFilteredProducts = async (req, res) => {
       success: true,
       data: products,
       pagination: {
-        currentPage: Number(page),
+        currentPage: safePage,
         totalPages: Math.ceil(totalProducts / safeLimit),
         totalProducts,
         limit: safeLimit,
