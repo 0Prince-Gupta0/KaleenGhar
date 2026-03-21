@@ -3,7 +3,11 @@ import { Button } from "../ui/button";
 import { SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
 import UserCartItemsContent from "./cart-items-content";
 
-function UserCartWrapper({ cartItems = [], setOpenCartSheet }) {
+function UserCartWrapper({
+  cartItems = [],
+  setOpenCartSheet,
+  closeMenu, // ✅ NEW PROP
+}) {
   const navigate = useNavigate();
 
   const totalCartAmount = cartItems.reduce((sum, item) => {
@@ -54,8 +58,9 @@ function UserCartWrapper({ cartItems = [], setOpenCartSheet }) {
       <Button
         disabled={cartItems.length === 0}
         onClick={() => {
+          setOpenCartSheet(false); // ✅ close cart
+          closeMenu?.();           // 🔥 close hamburger
           navigate("/shop/checkout");
-          setOpenCartSheet(false);
         }}
         className="w-full mt-6"
       >

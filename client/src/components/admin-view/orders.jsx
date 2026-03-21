@@ -13,6 +13,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -86,28 +93,39 @@ function AdminOrdersView() {
                 className="w-full sm:w-[260px]"
               />
 
-              <select
-                className="border rounded-md px-3 py-2 w-full sm:w-auto"
-                value={payment}
-                onChange={(e) => setPayment(e.target.value)}
-              >
-                <option value="all">All Payments</option>
-                <option value="paid">Paid</option>
-                <option value="pending">Pending</option>
-              </select>
+  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
 
-              <select
-                className="border rounded-md px-3 py-2 w-full sm:w-auto"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-              >
-                <option value="all">All Status</option>
-                {Object.entries(ORDER_FLOW).map(([k, v]) => (
-                  <option key={k} value={k}>
-                    {v.label}
-                  </option>
-                ))}
-              </select>
+  {/* PAYMENT */}
+  <Select value={payment} onValueChange={setPayment}>
+    <SelectTrigger className="w-full sm:w-[180px] bg-[#FFFCF7] border border-[#E6DED1]">
+      <SelectValue placeholder="All Payments" />
+    </SelectTrigger>
+
+    <SelectContent>
+      <SelectItem value="all">All Payments</SelectItem>
+      <SelectItem value="paid">Paid</SelectItem>
+      <SelectItem value="pending">Pending</SelectItem>
+    </SelectContent>
+  </Select>
+
+  {/* STATUS */}
+  <Select value={status} onValueChange={setStatus}>
+    <SelectTrigger className="w-full sm:w-[200px] bg-[#FFFCF7] border border-[#E6DED1]">
+      <SelectValue placeholder="All Status" />
+    </SelectTrigger>
+
+    <SelectContent>
+      <SelectItem value="all">All Status</SelectItem>
+
+      {Object.entries(ORDER_FLOW).map(([k, v]) => (
+        <SelectItem key={k} value={k}>
+          {v.label}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+
+</div>
             </div>
           </CardHeader>
 

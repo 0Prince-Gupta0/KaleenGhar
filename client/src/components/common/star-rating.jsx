@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 
 function StarRatingComponent({ rating, handleRatingChange }) {
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center justify-center sm:justify-start gap-0.5 sm:gap-1">
       {[1, 2, 3, 4, 5].map((star) => {
         const isActive = star <= rating;
 
@@ -20,6 +20,7 @@ function StarRatingComponent({ rating, handleRatingChange }) {
             className={`
               rounded-full
               transition-all duration-200
+              p-0 sm:p-1   /* 🔥 FIX: remove extra padding on mobile */
               ${
                 isActive
                   ? "text-[#C9A24D]"
@@ -30,7 +31,7 @@ function StarRatingComponent({ rating, handleRatingChange }) {
           >
             <StarIcon
               className={`
-                h-5 w-5
+                h-4 w-4 sm:h-5 sm:w-5   /* 🔥 responsive star size */
                 transition-all
                 ${
                   isActive

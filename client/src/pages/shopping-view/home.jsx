@@ -220,19 +220,28 @@ useEffect(() => {
       <SignatureCollections />
 
       {/* ================= FEATURED PRODUCTS ================= */}
-     <section className="py-28 bg-[#FFFCF7]">
-  <div className="max-w-7xl mx-auto px-6">
+    <section className="py-16 sm:py-20 lg:py-28 bg-[#FFFCF7]">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6">
 
-    <div className="text-center mb-20">
-      <span className="text-xs tracking-widest uppercase text-[#C9A24D]">
+    {/* HEADER */}
+    <div className="text-center mb-10 sm:mb-14 lg:mb-20">
+      <span className="text-[10px] sm:text-xs tracking-widest uppercase text-[#C9A24D]">
         Handcrafted Excellence
       </span>
-      <h2 className="text-4xl md:text-5xl font-bold mt-4">
+
+      <h2 className="text-2xl sm:text-3xl lg:text-4xl md:text-5xl font-bold mt-3 sm:mt-4">
         Featured Collection
       </h2>
     </div>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
+    {/* PRODUCTS GRID */}
+    <div className="
+      grid grid-cols-2
+      sm:grid-cols-2
+      md:grid-cols-3
+      lg:grid-cols-4
+      gap-3 sm:gap-5 lg:gap-8
+    ">
       {featuredProducts.length > 0 ? (
         featuredProducts.map((product) => (
           <ShoppingProductTile
@@ -245,16 +254,27 @@ useEffect(() => {
           />
         ))
       ) : (
-        <p className="text-center col-span-full text-gray-500">
+        <p className="text-center col-span-full text-gray-500 text-sm">
           No featured products available
         </p>
       )}
     </div>
 
-    <div className="flex justify-center mt-20">
+    {/* CTA */}
+    <div className="flex justify-center mt-10 sm:mt-14 lg:mt-20">
       <Button
         onClick={() => navigate("/shop/listing")}
-        className="px-10 py-4 bg-[#C9A24D] text-black rounded-full"
+        className="
+          px-6 sm:px-10
+          py-3 sm:py-4
+          text-sm sm:text-base
+          bg-[#C9A24D]
+          text-black
+          rounded-full
+          shadow-md
+          hover:bg-[#B08B3C]
+          active:scale-95
+        "
       >
         Explore Full Collection
       </Button>

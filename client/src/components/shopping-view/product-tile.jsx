@@ -3,7 +3,6 @@ import { Star, ShoppingCart } from "lucide-react";
 function ShoppingProductTile({ product, handleAddtoCart, onClick }) {
   const sizes = product?.sizes || [];
 
-  /* ===== PRICE LOGIC ===== */
   const prices = sizes.map((s) => Number(s.price));
   const salePrices = sizes
     .filter((s) => s.salePrice > 0)
@@ -15,7 +14,6 @@ function ShoppingProductTile({ product, handleAddtoCart, onClick }) {
   const isOnSale = salePrices.length > 0;
   const hasRating = product?.averageReview > 0;
 
-  /* ===== STOCK LOGIC ===== */
   const totalStock = sizes.reduce(
     (sum, s) => sum + Number(s.stock || 0),
     0
@@ -27,92 +25,101 @@ function ShoppingProductTile({ product, handleAddtoCart, onClick }) {
     <div
       onClick={onClick}
       className="
-        group bg-white border border-[#EEEEEE] rounded-sm overflow-hidden
-        cursor-pointer transition-all duration-300 ease-out
-        hover:-translate-y-[2px] hover:shadow-md
+        group bg-white border border-[#EEE7DC]
+        rounded-xl overflow-hidden
+        cursor-pointer
+        transition-all duration-300 ease-out
+        active:scale-[0.98]
+        hover:shadow-lg
       "
     >
       {/* IMAGE */}
-      <div className="relative h-[280px] bg-[#F3F3F3] overflow-hidden">
+      <div className="relative h-[180px] sm:h-[200px] bg-[#F3F3F3] overflow-hidden">
+
+        {/* IMAGE */}
         <img
           src={product?.gallery?.[0] || "/placeholder.png"}
           alt={product?.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
+
+        {/* GRADIENT OVERLAY */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
 
         {/* SALE BADGE */}
         {isOnSale && (
-          <span className="absolute top-3 left-3 bg-[#F4A300] text-white text-xs px-3 py-1">
+          <span className="absolute top-2 left-2 bg-[#C9A24D] text-black text-[10px] px-2 py-1 rounded-full font-medium shadow-sm">
             SALE
           </span>
         )}
 
         {/* LOW STOCK */}
         {isLowStock && (
-          <span className="absolute top-3 right-3 bg-white/90 text-gray-800 text-xs px-3 py-1 border border-gray-300">
+          <span className="absolute top-2 right-2 bg-white text-gray-800 text-[10px] px-2 py-1 rounded-full border shadow-sm">
             Low Stock
           </span>
         )}
       </div>
 
       {/* CONTENT */}
-      <div className="p-5">
+      <div className="p-3 sm:p-4 space-y-2">
+
         {/* CATEGORY */}
-        <p className="text-[11px] uppercase tracking-widest text-gray-500 mb-2">
+        <p className="text-[10px] uppercase tracking-widest text-gray-400">
           {product?.category}
         </p>
 
-        {/* TITLE + RATING */}
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <h3 className="text-base font-semibold text-gray-900 leading-snug line-clamp-2">
-            {product?.title}
-          </h3>
+        {/* TITLE */}
+        <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2 min-h-[36px]">
+          {product?.title}
+        </h3>
 
-          {hasRating && (
-            <div className="flex items-center gap-1 text-[#F4A300] shrink-0">
-              <Star size={14} fill="#F4A300" />
-              <span className="text-xs font-medium">
-                {product.averageReview.toFixed(1)}
-              </span>
-            </div>
-          )}
-        </div>
+        {/* RATING */}
+        {hasRating && (
+          <div className="flex items-center gap-1 text-[#C9A24D]">
+            <Star size={12} fill="#C9A24D" />
+            <span className="text-[11px] font-medium">
+              {product.averageReview.toFixed(1)}
+            </span>
+          </div>
+        )}
 
-        <div className="h-px bg-gray-200 mb-3" />
+        {/* PRICE + CTA */}
+        <div className="flex items-center justify-between pt-1">
 
-        {/* PRICE + CART */}
-        <div className="flex items-center justify-between">
           <div className="flex flex-col">
             {isOnSale && minSalePrice !== null && (
-              <span className="text-xs line-through text-gray-400">
+              <span className="text-[10px] line-through text-gray-400">
                 ₹{minPrice}
               </span>
             )}
 
-            <span className="text-lg font-semibold text-gray-900">
+            <span className="text-base font-semibold text-[#1F2933]">
               ₹{isOnSale && minSalePrice ? minSalePrice : minPrice}
             </span>
-
-            {sizes.length > 1 && (
-              <span className="text-xs text-muted-foreground">
-                Starting price
-              </span>
-            )}
           </div>
 
+          {/* CTA BUTTON */}
           <button
             onClick={(e) => {
               e.stopPropagation();
               handleAddtoCart(product);
             }}
             className="
-              flex items-center justify-center w-10 h-10 rounded-full
-              bg-gray-100 text-gray-800 transition-all duration-200
-              hover:bg-gray-900 hover:text-white hover:scale-105
+              flex items-center justify-center
+              w-9 h-9
+              rounded-full
+              bg-[#F5EFE6]
+              text-[#1F2933]
+              shadow-sm
+              transition-all duration-200
+              active:scale-90
+              hover:bg-[#1F2933] hover:text-white
             "
           >
-            <ShoppingCart size={16} />
+            <ShoppingCart size={15} />
           </button>
+
         </div>
       </div>
     </div>

@@ -163,90 +163,107 @@ return toast({ title: "Cart is empty", variant: "destructive" });
 };
 
 /* ================= UI ================= */
-return ( <div className="min-h-screen bg-[#FAF7F2] py-10"> <div className="mx-auto max-w-6xl px-4"> <h1 className="text-3xl font-semibold mb-8">Checkout</h1>
+return ( 
+<div className="min-h-screen bg-[#FAF7F2] py-10"> <div className="mx-auto max-w-6xl px-4"> <h1 className="text-3xl font-semibold mb-8">Checkout</h1>
 
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
       {/* LEFT */}
-      <div className="lg:col-span-2 space-y-8">
+<div className="lg:col-span-2 space-y-6 sm:space-y-8">
 
-        {/* CART */}
-        <div>
-          <h2 className="text-xl font-semibold mb-4">
-            Your Cart Items
-          </h2>
+  {/* CART */}
+  <div>
+    <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">
+      Your Cart Items
+    </h2>
 
-          {isCartEmpty ? (
-            <div className="rounded-xl border bg-[#FFFDF8] p-8 text-center">
-              <p className="text-sm font-medium">
-                Your cart is empty
-              </p>
-            </div>
-          ) : (
-            cartItems.map((item) => (
-              <div
-                key={`${item.productId}-${item.size}`}
-                className="rounded-xl border bg-white p-4 mb-4"
-              >
-                <UserCartItemsContent cartItem={item} />
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* ADDRESS */}
-        <div className="rounded-xl border bg-white p-5">
-          <div className="flex justify-between mb-4">
-            <div>
-              <h3 className="font-semibold">Deliver To</h3>
-              <p className="text-xs text-muted-foreground">
-                Choose address
-              </p>
-            </div>
-
-            <AddressDialog
-              open={openAddressDialog}
-              onOpenChange={setOpenAddressDialog}
-              onAddressAdded={(addr) => {
-                setCurrentSelectedAddress(addr);
-                dispatch(fetchAllAddresses(user.id));
-              }}
-            />
-          </div>
-
-          <SavedAddresses
-            selectedAddress={currentSelectedAddress}
-            setSelectedAddress={setCurrentSelectedAddress}
-            onEdit={handleEditAddress}
-            onDelete={handleDeleteAddress}
-          />
-        </div>
+    {isCartEmpty ? (
+      <div className="rounded-xl border bg-[#FFFDF8] p-6 sm:p-8 text-center">
+        <p className="text-sm font-medium">
+          Your cart is empty
+        </p>
       </div>
+    ) : (
+      cartItems.map((item) => (
+        <div
+          key={`${item.productId}-${item.size}`}
+          className="rounded-xl border bg-white p-3 sm:p-4 mb-3 sm:mb-4"
+        >
+          <UserCartItemsContent cartItem={item} />
+        </div>
+      ))
+    )}
+  </div>
+
+  {/* ADDRESS */}
+  <div className="rounded-xl border bg-white p-4 sm:p-5">
+    
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+      
+      <div>
+        <h3 className="font-semibold text-base sm:text-lg">
+          Deliver To
+        </h3>
+        <p className="text-xs text-muted-foreground">
+          Choose address
+        </p>
+      </div>
+
+      <AddressDialog
+        open={openAddressDialog}
+        onOpenChange={setOpenAddressDialog}
+        onAddressAdded={(addr) => {
+          setCurrentSelectedAddress(addr);
+          dispatch(fetchAllAddresses(user.id));
+        }}
+      />
+    </div>
+
+    <div className="overflow-hidden">
+      <SavedAddresses
+        selectedAddress={currentSelectedAddress}
+        setSelectedAddress={setCurrentSelectedAddress}
+        onEdit={handleEditAddress}
+        onDelete={handleDeleteAddress}
+      />
+    </div>
+
+  </div>
+</div>
 
       {/* RIGHT */}
-      <div>
-        <div className="border bg-white p-6 rounded-xl sticky top-8">
-          <h3 className="font-semibold mb-4">Order Summary</h3>
+     <div>
+  <div className="
+    border bg-white 
+    p-4 sm:p-6 
+    rounded-xl 
+    lg:sticky lg:top-8
+  ">
+    
+    <h3 className="font-semibold text-base sm:text-lg mb-4">
+      Order Summary
+    </h3>
 
-          <div className="flex justify-between mb-3">
-            <span>Subtotal</span>
-            <span>₹{totalCartAmount}</span>
-          </div>
+    <div className="flex justify-between text-sm sm:text-base mb-3">
+      <span>Subtotal</span>
+      <span className="font-medium">₹{totalCartAmount}</span>
+    </div>
 
-          <div className="border-t pt-3 flex justify-between font-semibold">
-            <span>Total</span>
-            <span>₹{totalCartAmount}</span>
-          </div>
+    <div className="border-t pt-3 flex justify-between font-semibold text-sm sm:text-base">
+      <span>Total</span>
+      <span>₹{totalCartAmount}</span>
+    </div>
 
-          <Button
-            onClick={handleRazorpayPayment}
-            disabled={isCartEmpty}
-            className="w-full mt-6"
-          >
-            Pay with RazorPay
-          </Button>
-        </div>
-      </div>
+    <Button
+      onClick={handleRazorpayPayment}
+      disabled={isCartEmpty}
+      className="w-full mt-5 sm:mt-6 h-10 sm:h-11 text-sm sm:text-base"
+    >
+      Pay with RazorPay
+    </Button>
+    
+  </div>
+</div>
 
     </div>
   </div>

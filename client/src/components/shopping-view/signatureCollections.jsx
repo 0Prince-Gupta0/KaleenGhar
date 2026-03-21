@@ -29,45 +29,95 @@ function SignatureCollections() {
   const navigate = useNavigate();
 
   return (
-    <section className="py-28 bg-[#FBF7F1]">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-[#1F2933]">
+    <section className="py-16 sm:py-20 lg:py-28 bg-[#FBF7F1]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+
+        {/* HEADER */}
+        <div className="text-center mb-10 sm:mb-14 lg:mb-16">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1F2933]">
             Signature Collections
           </h2>
-          <p className="mt-4 text-[#6B7280] max-w-xl mx-auto">
+
+          <p className="mt-3 sm:mt-4 text-sm sm:text-base text-[#6B7280] max-w-xl mx-auto">
             Curated designs that define elegance and heritage.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        {/* GRID */}
+        <div className="
+          grid grid-cols-1 
+          sm:grid-cols-2 
+          lg:grid-cols-3 
+          gap-5 sm:gap-6 lg:gap-10
+        ">
           {collections.map((item) => (
             <div
               key={item.id}
-              className="group relative overflow-hidden rounded-2xl cursor-pointer"
               onClick={() => navigate("/shop/listing")}
+              className="
+                group relative overflow-hidden rounded-2xl
+                cursor-pointer
+                active:scale-[0.98]
+                transition
+              "
             >
+              {/* IMAGE */}
               <img
                 src={item.image}
                 alt={item.title}
-                className="h-[420px] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="
+                  h-[260px] sm:h-[320px] lg:h-[420px]
+                  w-full object-cover
+                  transition-transform duration-700
+                  group-hover:scale-105
+                "
               />
 
+              {/* OVERLAY */}
               <div className="absolute inset-0 bg-black/40" />
 
-              <div className="absolute bottom-8 left-8 text-white">
-                <h3 className="text-2xl font-bold">{item.title}</h3>
-                <p className="text-sm text-gray-200 mt-2">
+              {/* CONTENT */}
+              <div className="
+                absolute bottom-4 sm:bottom-6 lg:bottom-8
+                left-4 sm:left-6 lg:left-8
+                right-4 sm:right-auto
+                text-white
+              ">
+                <h3 className="
+                  text-lg sm:text-xl lg:text-2xl 
+                  font-bold
+                ">
+                  {item.title}
+                </h3>
+
+                <p className="
+                  text-xs sm:text-sm 
+                  text-gray-200 
+                  mt-1 sm:mt-2
+                  max-w-[90%]
+                ">
                   {item.subtitle}
                 </p>
 
                 <Button
                   variant="outline"
-                  className="mt-4 border-white  bg-black text-white hover:bg-white hover:text-black"
+                  className="
+                    mt-3 sm:mt-4
+                    text-xs sm:text-sm
+                    px-4 sm:px-5
+                    py-2 sm:py-2.5
+                    border-white bg-black text-white
+                    hover:bg-white hover:text-black
+                    rounded-full
+                    transition
+                  "
                 >
                   Explore
                 </Button>
               </div>
+
+              {/* GRADIENT (premium touch) */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
             </div>
           ))}
         </div>

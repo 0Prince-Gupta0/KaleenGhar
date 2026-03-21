@@ -98,7 +98,7 @@ function AdminProducts() {
           title: currentEditedId
             ? "Product updated successfully"
             : "Product added successfully",
-            variant:"success"
+          variant: "success",
         });
       }
     });
@@ -162,7 +162,12 @@ function AdminProducts() {
             key={product._id}
             product={product}
             handleDelete={handleDelete}
-            setFormData={setFormData}
+            setFormData={(data) => {
+              setFormData({
+                ...data,
+                gallery: data.gallery || [],
+              });
+            }}
             setCurrentEditedId={setCurrentEditedId}
             setOpenCreateProductsDialog={setOpenCreateProductsDialog}
           />
@@ -188,18 +193,32 @@ function AdminProducts() {
             isEditMode={Boolean(currentEditedId)}
           />
 
-          {/* GALLERY */}
-          <div className="flex gap-2 flex-wrap mt-3">
+          {/* 🔥 GALLERY WITH REMOVE */}
+          <div className="flex gap-3 flex-wrap mt-3">
             {formData.gallery.map((img, i) => (
-              <img
-                key={i}
-                src={img}
-                className="w-20 h-20 rounded object-cover"
-              />
+              <div key={i} className="relative group">
+                <img
+                  src={img}
+                  className="w-20 h-20 rounded object-cover border"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      gallery: prev.gallery.filter((_, index) => index !== i),
+                    }));
+                  }}
+                  className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                >
+                  ✕
+                </button>
+              </div>
             ))}
           </div>
 
-          {/* FORM FIELDS */}
+          {/* FORM */}
           <div className="py-6">
             <CommonForm
               formData={formData}
@@ -210,95 +229,83 @@ function AdminProducts() {
           </div>
 
           {/* SIZES */}
-      {/* SIZES & PRICING */}
-<div className="border rounded-xl p-4 bg-muted/30 space-y-3 mt-6">
-  {/* HEADER */}
-  <div className="flex justify-between items-center">
-    <h3 className="font-semibold text-lg">Sizes & Pricing</h3>
+          <div className="border rounded-xl p-4 bg-muted/30 space-y-3 mt-6">
+            <div className="flex justify-between items-center">
+              <h3 className="font-semibold text-lg">Sizes & Pricing</h3>
 
-    <Button size="sm" variant="outline" onClick={addSizeRow}>
-      + Add Size
-    </Button>
-  </div>
+              <Button size="sm" variant="outline" onClick={addSizeRow}>
+                + Add Size
+              </Button>
+            </div>
 
-  {/* COLUMN LABELS (small) */}
-  <div className="grid grid-cols-[1fr_1fr_1fr_0.8fr_auto] text-xs font-medium text-muted-foreground px-1">
-    <span>Size</span>
-    <span>Price</span>
-    <span>Sale</span>
-    <span>Stock</span>
-    <span></span>
-  </div>
+            <div className="grid grid-cols-[1fr_1fr_1fr_0.8fr_auto] text-xs font-medium text-muted-foreground px-1">
+              <span>Size</span>
+              <span>Price</span>
+              <span>Sale</span>
+              <span>Stock</span>
+              <span></span>
+            </div>
 
-  <div className="border-b" />
+            <div className="border-b" />
 
-  {/* EMPTY STATE */}
-  {formData.sizes.length === 0 && (
-    <p className="text-sm text-muted-foreground py-2">
-      No sizes added yet. Add your first size to enable pricing.
-    </p>
-  )}
+            {formData.sizes.length === 0 && (
+              <p className="text-sm text-muted-foreground py-2">
+                No sizes added yet.
+              </p>
+            )}
 
-  {/* SIZE ROWS */}
-  <div className="space-y-2">
-    {formData.sizes.map((size, index) => (
-      <div
-        key={index}
-        className="grid grid-cols-[1fr_1fr_1fr_0.8fr_auto] items-center"
-      >
-        <input
-          className="border p-2 rounded-md bg-white min-w-0 w-full"
-          placeholder="e.g. 5x7 ft"
-          value={size.label}
-          onChange={(e) =>
-            updateSizeRow(index, "label", e.target.value)
-          }
-        />
+            <div className="space-y-2">
+              {formData.sizes.map((size, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-[1fr_1fr_1fr_0.8fr_auto] items-center"
+                >
+                  <input
+                    className="border p-2 rounded-md bg-white w-full"
+                    value={size.label}
+                    onChange={(e) =>
+                      updateSizeRow(index, "label", e.target.value)
+                    }
+                  />
 
-        <input
-          type="number"
-          min={0}
-          className="border p-2 rounded-md bg-white min-w-0 w-full"
-          placeholder="0"
-          value={size.price}
-          onChange={(e) =>
-            updateSizeRow(index, "price", e.target.value)
-          }
-        />
+                  <input
+                    type="number"
+                    className="border p-2 rounded-md bg-white w-full"
+                    value={size.price}
+                    onChange={(e) =>
+                      updateSizeRow(index, "price", e.target.value)
+                    }
+                  />
 
-        <input
-          type="number"
-             min={0}
-          className="border p-2 rounded-md bg-white min-w-0 w-full"
-          placeholder="0"
-          value={size.salePrice || ""}
-          onChange={(e) =>
-            updateSizeRow(index, "salePrice", e.target.value)
-          }
-        />
+                  <input
+                    type="number"
+                    className="border p-2 rounded-md bg-white w-full"
+                    value={size.salePrice || ""}
+                    onChange={(e) =>
+                      updateSizeRow(index, "salePrice", e.target.value)
+                    }
+                  />
 
-        <input
-          type="number"
-             min={0}
-          className="border p-2 rounded-md bg-white min-w-0 w-full"
-          placeholder="0"
-          value={size.stock}
-          onChange={(e) =>
-            updateSizeRow(index, "stock", e.target.value)
-          }
-        />
+                  <input
+                    type="number"
+                    className="border p-2 rounded-md bg-white w-full"
+                    value={size.stock}
+                    onChange={(e) =>
+                      updateSizeRow(index, "stock", e.target.value)
+                    }
+                  />
 
-        <button
-          type="button"
-          onClick={() => removeSizeRow(index)}
-          className="text-red-500 text-sm px-2 hover:scale-110 transition"
-        >
-          ✕
-        </button>
-      </div>
-    ))}
-  </div>
-</div>
+                  <button
+                    type="button"
+                    onClick={() => removeSizeRow(index)}
+                    className="text-red-500"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* SUBMIT */}
           <div className="sticky bottom-0 pt-4 bg-background">

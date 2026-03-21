@@ -148,146 +148,169 @@ function ProductDetailsPage() {
     <div className="max-w-7xl mx-auto px-6 py-16 space-y-24">
       
       {/* ================= PRODUCT SECTION ================= */}
-     <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-16">
+ <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 sm:gap-14 lg:gap-16">
         
-        {/* ===== GALLERY ===== */}
-        <div className="flex gap-5">
-          <div className="flex flex-col gap-4">
-            {productDetails.gallery?.map((img) => (
-              <button
-                key={img}
-                onClick={() => setSelectedImage(img)}
-                className={`w-20 h-20 rounded-xl overflow-hidden border ${
-                  selectedImage === img
-                    ? "ring-2 ring-[#C9A24D] border-[#C9A24D]"
-                    : "border-[#E7E2DA]"
-                }`}
-              >
-                <img src={img} className="w-full h-full object-cover" />
-              </button>
-            ))}
-          </div>
+  {/* ===== GALLERY ===== */}
+  <div className="flex flex-col-reverse lg:flex-row gap-4 sm:gap-5">
 
-          <div className="flex-1 rounded-3xl overflow-hidden border border-[#E7E2DA]">
-            <img
-              src={selectedImage}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </div>
+    {/* Thumbnails */}
+    <div className="flex lg:flex-col gap-3 sm:gap-4 overflow-x-auto lg:overflow-visible">
+      {productDetails.gallery?.map((img) => (
+        <button
+          key={img}
+          onClick={() => setSelectedImage(img)}
+          className={`min-w-[70px] min-h-[70px] sm:w-20 sm:h-20 rounded-xl overflow-hidden border ${
+            selectedImage === img
+              ? "ring-2 ring-[#C9A24D] border-[#C9A24D]"
+              : "border-[#E7E2DA]"
+          }`}
+        >
+          <img src={img} className="w-full h-full object-cover" />
+        </button>
+      ))}
+    </div>
 
-        {/* ===== DETAILS ===== */}
-        <div className="flex flex-col gap-8">
-          
-          {/* BADGES + TITLE */}
-          <div className="space-y-5">
-            <div className="flex gap-2">
-              {isOnSale && (
-                <span className="bg-[#C9A24D] text-black text-xs px-3 py-1 rounded-full font-medium">
-                  Sale
-                </span>
-              )}
+    {/* Main Image */}
+    <div className="flex-1 rounded-2xl sm:rounded-3xl overflow-hidden border border-[#E7E2DA]">
+      <img
+        src={selectedImage}
+        className="w-full h-full object-cover"
+      />
+    </div>
 
-              {productDetails.isFeatured && (
-                <span className="bg-[#4F6A73] text-white text-xs px-3 py-1 rounded-full font-medium">
-                  Featured
-                </span>
-              )}
-            </div>
+  </div>
 
-            <h1 className="text-4xl font-semibold text-[#2E2E2E]">
-              {productDetails.title}
-            </h1>
+  {/* ===== DETAILS ===== */}
+  <div className="flex flex-col gap-6 sm:gap-8">
+    
+    {/* BADGES + TITLE */}
+    <div className="space-y-4 sm:space-y-5">
 
-            <div className="flex items-center gap-3">
-              <StarRatingComponent rating={avgRating} />
-              <span className="text-sm text-[#6B6B6B]">
-                {reviews.length} reviews
-              </span>
-            </div>
+      <div className="flex flex-wrap gap-2">
+        {isOnSale && (
+          <span className="bg-[#C9A24D] text-black text-xs px-3 py-1 rounded-full font-medium">
+            Sale
+          </span>
+        )}
 
-            {/* PRICE */}
-            <div className="flex items-center gap-4">
-              {isOnSale && (
-                <span className="text-lg text-[#9A9A9A] line-through">
-                  ₹{price}
-                </span>
-              )}
-
-              <span className="text-3xl font-semibold text-[#C9A24D]">
-                ₹{isOnSale ? salePrice : price}
-              </span>
-
-              {isOnSale && (
-                <span className="bg-[#4F6A73] text-white text-xs px-2 py-1 rounded">
-                  {discountPercent}% off
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* SIZE */}
-          <div className="space-y-3">
-            <p className="text-sm text-[#6B6B6B]">
-              Size:{" "}
-              <span className="font-medium text-[#2E2E2E]">
-                {selectedSize?.label}
-              </span>
-            </p>
-
-            <div className="flex flex-wrap gap-3">
-              {productDetails.sizes?.map((size) => (
-                <button
-                  key={size.label}
-                  onClick={() => setSelectedSize(size)}
-                  disabled={size.stock === 0}
-                  className={`px-5 py-2 rounded-full text-sm border transition
-                    ${
-                      selectedSize?.label === size.label
-                        ? "bg-[#C9A24D] text-black border-[#C9A24D]"
-                        : "bg-white border-[#E7E2DA]"
-                    }
-                    ${size.stock === 0 ? "opacity-40 cursor-not-allowed" : ""}
-                  `}
-                >
-                  {size.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* QUANTITY + CTA */}
-          <div className="flex items-center gap-5">
-            <div className="flex items-center border border-[#E7E2DA] rounded-md overflow-hidden bg-white">
-              <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-4 py-3">−</button>
-              <span className="px-5">{quantity}</span>
-              <button onClick={() => setQuantity(q => {  if (!selectedSize) return q;
-
-          if (q >= selectedSize.stock) {
-            toast({
-              title: "Stock limit reached",
-              description: `Only ${selectedSize.stock} item${
-                selectedSize.stock > 1 ? "s" : ""
-              } available. Please check back soon.`,
-              variant: "destructive",
-            });
-            return q;
-          }
-
-          return q + 1;
-              })} className="px-4 py-3">+</button>
-            </div>
-
-            <Button onClick={handleAddToCart} className="flex-1 py-6 bg-[#C9A24D] text-black">
-              Add to Cart
-            </Button>
-          </div>
-        </div>
+        {productDetails.isFeatured && (
+          <span className="bg-[#4F6A73] text-white text-xs px-3 py-1 rounded-full font-medium">
+            Featured
+          </span>
+        )}
       </div>
+
+      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#2E2E2E] leading-snug">
+        {productDetails.title}
+      </h1>
+
+      <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+        <StarRatingComponent rating={avgRating} />
+        <span className="text-xs sm:text-sm text-[#6B6B6B]">
+          {reviews.length} reviews
+        </span>
+      </div>
+
+      {/* PRICE */}
+      <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+        {isOnSale && (
+          <span className="text-sm sm:text-lg text-[#9A9A9A] line-through">
+            ₹{price}
+          </span>
+        )}
+
+        <span className="text-2xl sm:text-3xl font-semibold text-[#C9A24D]">
+          ₹{isOnSale ? salePrice : price}
+        </span>
+
+        {isOnSale && (
+          <span className="bg-[#4F6A73] text-white text-xs px-2 py-1 rounded">
+            {discountPercent}% off
+          </span>
+        )}
+      </div>
+    </div>
+
+    {/* SIZE */}
+    <div className="space-y-3">
+      <p className="text-sm text-[#6B6B6B]">
+        Size:{" "}
+        <span className="font-medium text-[#2E2E2E]">
+          {selectedSize?.label}
+        </span>
+      </p>
+
+      <div className="flex flex-wrap gap-2 sm:gap-3">
+        {productDetails.sizes?.map((size) => (
+          <button
+            key={size.label}
+            onClick={() => setSelectedSize(size)}
+            disabled={size.stock === 0}
+            className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm border transition
+              ${
+                selectedSize?.label === size.label
+                  ? "bg-[#C9A24D] text-black border-[#C9A24D]"
+                  : "bg-white border-[#E7E2DA]"
+              }
+              ${size.stock === 0 ? "opacity-40 cursor-not-allowed" : ""}
+            `}
+          >
+            {size.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* QUANTITY + CTA */}
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-5">
+
+      <div className="flex items-center justify-between sm:justify-start border border-[#E7E2DA] rounded-md overflow-hidden bg-white w-full sm:w-auto">
+        <button
+          onClick={() => setQuantity(q => Math.max(1, q - 1))}
+          className="px-4 py-3"
+        >
+          −
+        </button>
+
+        <span className="px-5">{quantity}</span>
+
+        <button
+          onClick={() => setQuantity(q => {  
+            if (!selectedSize) return q;
+
+            if (q >= selectedSize.stock) {
+              toast({
+                title: "Stock limit reached",
+                description: `Only ${selectedSize.stock} item${
+                  selectedSize.stock > 1 ? "s" : ""
+                } available. Please check back soon.`,
+                variant: "destructive",
+              });
+              return q;
+            }
+
+            return q + 1;
+          })}
+          className="px-4 py-3"
+        >
+          +
+        </button>
+      </div>
+
+      <Button
+        onClick={handleAddToCart}
+        className="w-full sm:flex-1 py-4 sm:py-6 bg-[#C9A24D] text-black"
+      >
+        Add to Cart
+      </Button>
+
+    </div>
+  </div>
+</div>
 
 
       {/* ================= ACCORDION ================= */}
-  <div className="border-t border-[#E7E2DA] pt-12 space-y-6">
+<div className="border-t border-[#E7E2DA] pt-8 sm:pt-10 lg:pt-12 space-y-4 sm:space-y-6">
 
   {["description","care","shipping"].map(section => {
     const isOpen = openSection === section;
@@ -295,14 +318,14 @@ function ProductDetailsPage() {
     return (
       <div
         key={section}
-        className="border-b border-[#E7E2DA] pb-6"
+        className="border-b border-[#E7E2DA] pb-5 sm:pb-6"
       >
         <button
           onClick={() => setOpenSection(isOpen ? null : section)}
-          className="w-full flex justify-between items-center text-left group"
+          className="w-full flex justify-between items-center text-left group gap-4"
         >
           <h3 className={`
-            text-lg font-medium transition
+            text-base sm:text-lg font-medium transition leading-snug
             ${isOpen ? "text-[#C9A24D]" : "text-[#2E2E2E]"}
           `}>
             {section === "description"
@@ -313,7 +336,7 @@ function ProductDetailsPage() {
           </h3>
 
           <span className={`
-            text-xl transition
+            text-lg sm:text-xl transition shrink-0
             ${isOpen ? "text-[#C9A24D]" : "text-[#6B6B6B]"}
           `}>
             {isOpen ? "−" : "+"}
@@ -321,7 +344,7 @@ function ProductDetailsPage() {
         </button>
 
         {isOpen && (
-          <div className="mt-4 text-[#6B6B6B] leading-relaxed max-w-3xl">
+          <div className="mt-3 sm:mt-4 text-sm sm:text-base text-[#6B6B6B] leading-relaxed max-w-3xl">
             {section === "description" && productDetails.description}
 
             {section === "care" && (
@@ -373,36 +396,36 @@ function ProductDetailsPage() {
 
 
     {/* ===== RATING DISTRIBUTION ===== */}
-    <div className="space-y-2">
+ <div className="space-y-2 max-w-xs mx-auto">
 
-      {ratingCounts.map(({ star, count }) => (
-        <div key={star} className="flex items-center gap-3">
+  {ratingCounts.map(({ star, count }) => (
+    <div key={star} className="flex items-center justify-center gap-3">
 
-          <span className="w-6 text-sm">{star}★</span>
+      {/* Left label */}
+      <span className="w-8 text-sm text-right">{star}★</span>
 
-          <div className="flex-1 h-2 bg-[#E7E2DA] rounded">
+      {/* Bar */}
+      <div className="w-[140px] sm:w-[180px] h-2 bg-[#E7E2DA] rounded">
+        <div
+          className="h-2 bg-[#C9A24D] rounded"
+          style={{
+            width:
+              totalReviews > 0
+                ? `${(count / totalReviews) * 100}%`
+                : "0%",
+          }}
+        />
+      </div>
 
-            <div
-              className="h-2 bg-[#C9A24D] rounded"
-              style={{
-                width:
-                  totalReviews > 0
-                    ? `${(count / totalReviews) * 100}%`
-                    : "0%",
-              }}
-            />
-
-          </div>
-
-          <span className="text-xs text-[#6B6B6B]">
-            {count}
-          </span>
-
-        </div>
-      ))}
+      {/* Right count */}
+      <span className="w-6 text-xs text-[#6B6B6B] text-left">
+        {count}
+      </span>
 
     </div>
+  ))}
 
+</div>
 
     {/* ===== CTA ===== */}
     <div className="flex flex-col items-center gap-3">

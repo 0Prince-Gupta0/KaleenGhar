@@ -5,305 +5,195 @@ const About = () => {
     <div className="bg-[#FBF7F1] text-[#2E2E2E]">
 
       {/* HERO SECTION */}
-<section className="relative h-[65vh] flex items-center justify-center text-center overflow-hidden">
+      <section className="relative h-[55vh] sm:h-[60vh] md:h-[65vh] flex items-center justify-center text-center overflow-hidden">
 
-  {/* Authentic Carpet Background */}
-  <img
-    src="https://images.unsplash.com/photo-1600166898405-da9535204843"
-    alt="Traditional Carpet"
-    className="absolute w-full h-full object-cover"
-  />
-
-  {/* Dark overlay */}
-  <div className="absolute inset-0 bg-black/55"></div>
-
-  {/* Content */}
-  <div className="relative z-10 px-6">
-
-    <h1 className="text-4xl md:text-5xl font-semibold text-white">
-      About
-    </h1>
-
-    {/* Qaleen Ghar Branding */}
-    <h2
-      className="mt-3 text-4xl md:text-5xl font-bold tracking-[0.35em]"
-      style={{ color: "#C49A3A" }}
-    >
-      QALEEN GHAR
-    </h2>
-
-    <p className="mt-6 max-w-2xl mx-auto text-lg text-gray-200">
-      Bringing the heritage of Bhadohi carpet craftsmanship to modern interiors
-      across the world.
-    </p>
-
-  </div>
-
-</section>
-      {/* ABOUT CONTENT */}
-     <section className="bg-[#FBF7F1] py-24">
-
-  <div className="max-w-6xl mx-auto px-6">
-
-    {/* Section Title */}
-    <div className="text-center mb-16">
-      <h2 className="text-3xl md:text-4xl font-semibold text-[#2E2E2E]">
-        About <span style={{ color: "#C49A3A" }}>QaleenGhar</span>
-      </h2>
-
-      <div className="w-24 h-[2px] bg-[#C49A3A] mx-auto mt-4"></div>
-    </div>
-
-    {/* Content */}
-    <div className="grid md:grid-cols-2 gap-14 items-center">
-
-      {/* Image */}
-      <div className="relative group">
         <img
           src="https://images.unsplash.com/photo-1600166898405-da9535204843"
-          alt="Bhadohi Carpet Craftsmanship"
-          className="rounded-lg shadow-lg group-hover:scale-105 transition duration-500"
+          alt="Traditional Carpet"
+          className="absolute w-full h-full object-cover"
         />
 
-        <div className="absolute -bottom-6 -right-6 bg-[#F3EDE4] px-6 py-4 shadow-md">
-          <p className="text-sm tracking-widest font-semibold text-[#C49A3A]">
-            EST. 1990
+        <div className="absolute inset-0 bg-black/55"></div>
+
+        <div className="relative z-10 px-4 sm:px-6 max-w-4xl">
+
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-white">
+            About
+          </h1>
+
+          <h2
+            className="mt-2 sm:mt-3 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-[0.2em] sm:tracking-[0.3em]"
+            style={{ color: "#C49A3A" }}
+          >
+            QALEEN GHAR
+          </h2>
+
+          <p className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-gray-200 max-w-2xl mx-auto">
+            Bringing the heritage of Bhadohi carpet craftsmanship to modern interiors
+            across the world.
           </p>
+
         </div>
-      </div>
+      </section>
 
-      {/* Text */}
-      <div className="space-y-6 leading-relaxed text-gray-700">
+      {/* ABOUT CONTENT */}
+      <section className="py-16 sm:py-20 lg:py-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
-        <p>
-          Welcome to{" "}
-          <span className="font-semibold text-[#C49A3A]">
-            QaleenGhar
-          </span>
-          , a trusted name in quality carpets and fine craftsmanship.
-          Our journey began in{" "}
-          <strong>Bhadohi, India — the carpet capital of the country.</strong>
-        </p>
+          {/* Title */}
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold">
+              About <span className="text-[#C49A3A]">QaleenGhar</span>
+            </h2>
+            <div className="w-20 sm:w-24 h-[2px] bg-[#C49A3A] mx-auto mt-3 sm:mt-4"></div>
+          </div>
 
-        <p>
-          What started as a small family business by our grandfather in
-          <strong> 1990 </strong>
-          has grown into a brand dedicated to delivering beautifully crafted
-          carpets to customers across India and beyond.
-        </p>
+          {/* Content */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-14 items-center">
 
-        <p>
-          With decades of experience in the carpet industry, we specialize in
-          manufacturing high-quality carpets in various styles, designs, and
-          materials. Our expertise particularly lies in{" "}
-          <span className="font-semibold text-[#C49A3A]">
-            hand-tufted carpets
-          </span>
-          , known for their durability, elegance, and intricate craftsmanship.
-        </p>
+            {/* Image */}
+            <div className="relative group max-w-md mx-auto md:max-w-full">
+              <img
+                src="https://images.unsplash.com/photo-1600166898405-da9535204843"
+                alt="Bhadohi Carpet Craftsmanship"
+                className="rounded-lg shadow-lg w-full object-cover group-hover:scale-105 transition duration-500"
+              />
 
-        <p>
-          At QaleenGhar, we proudly operate our own manufacturing facility in
-          Bhadohi where skilled artisans combine traditional weaving techniques
-          with modern design concepts while maintaining strict quality control.
-        </p>
+              <div className="absolute -bottom-4 -right-4 sm:-bottom-6 sm:-right-6 bg-[#F3EDE4] px-4 sm:px-6 py-2 sm:py-4 shadow-md">
+                <p className="text-xs sm:text-sm tracking-widest font-semibold text-[#C49A3A]">
+                  EST. 1990
+                </p>
+              </div>
+            </div>
 
-        <p>
-          Each carpet we produce carries a story of{" "}
-          <span className="font-semibold text-[#C49A3A]">
-            heritage, craftsmanship, and attention to detail
-          </span>
-          . Whether for homes, offices, hotels, or commercial spaces, our
-          carpets enhance interiors with comfort, style, and lasting quality.
-        </p>
+            {/* Text */}
+            <div className="space-y-4 sm:space-y-6 text-sm sm:text-base leading-relaxed text-gray-700">
 
-        <p className="text-[#2E2E2E] font-medium">
-          Our goal is simple — to bring the beauty of authentic Bhadohi
-          craftsmanship to customers seeking premium carpets that combine
-          tradition with contemporary design.
-        </p>
+              <p>
+                Welcome to <span className="font-semibold text-[#C49A3A]">QaleenGhar</span>, 
+                a trusted name in quality carpets and fine craftsmanship.
+                Our journey began in <strong>Bhadohi, India — the carpet capital.</strong>
+              </p>
 
-      </div>
+              <p>
+                What started as a small family business in <strong>1990</strong> 
+                has grown into a brand delivering beautifully crafted carpets worldwide.
+              </p>
 
-    </div>
-  </div>
+              <p>
+                We specialize in <span className="font-semibold text-[#C49A3A]">hand-tufted carpets</span>, 
+                known for durability, elegance, and craftsmanship.
+              </p>
 
-</section>
+              <p>
+                Our own manufacturing facility ensures strict quality control 
+                while blending traditional and modern designs.
+              </p>
 
+              <p>
+                Each carpet reflects <span className="font-semibold text-[#C49A3A]">heritage and precision</span>.
+              </p>
+
+              <p className="text-[#2E2E2E] font-medium">
+                Bringing authentic craftsmanship to modern homes worldwide.
+              </p>
+
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* MISSION & VISION */}
-<section className="bg-[#FBF7F1] py-24">
+      <section className="py-16 sm:py-20 lg:py-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
-  <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold">
+              Our <span className="text-[#C49A3A]">Purpose</span>
+            </h2>
+            <div className="w-20 sm:w-24 h-[2px] bg-[#C49A3A] mx-auto mt-3 sm:mt-4"></div>
+          </div>
 
-    {/* Section Title */}
-    <div className="text-center mb-16">
-      <h2 className="text-3xl md:text-4xl font-semibold text-[#2E2E2E]">
-        Our <span className="text-[#C49A3A]">Purpose</span>
-      </h2>
-      <div className="w-24 h-[2px] bg-[#C49A3A] mx-auto mt-4"></div>
-    </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-16">
 
-    {/* Content */}
-    <div className="grid md:grid-cols-2 gap-16 items-start">
+            {/* Mission */}
+            <div>
+              <h3 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">
+                Our Mission
+              </h3>
 
-      {/* Mission */}
-      <div>
-        <h3 className="text-2xl font-semibold text-[#2E2E2E] mb-6">
-          Our Mission
-        </h3>
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
+                Preserve Bhadohi craftsmanship while delivering premium carpets.
+              </p>
 
-        <p className="text-gray-600 mb-6 leading-relaxed">
-          Our mission at <span className="text-[#C49A3A] font-semibold">QaleenGhar</span> is to preserve and promote 
-          the rich heritage of Bhadohi carpet craftsmanship while delivering premium-quality carpets 
-          that meet modern design and lifestyle needs.
-        </p>
+              <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-gray-600">
+                <li>✓ Handmade & hand-tufted carpets</li>
+                <li>✓ Support artisans</li>
+                <li>✓ High-quality materials</li>
+                <li>✓ Elegant & durable designs</li>
+              </ul>
+            </div>
 
-        <ul className="space-y-3 text-gray-600">
-          <li>✓ Provide high-quality handmade and hand-tufted carpets</li>
-          <li>✓ Support and empower skilled artisans from Bhadohi</li>
-          <li>✓ Maintain excellent craftsmanship and durable materials</li>
-          <li>✓ Offer carpets combining tradition, elegance, and comfort</li>
-        </ul>
-      </div>
+            {/* Vision */}
+            <div>
+              <h3 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">
+                Our Vision
+              </h3>
 
-      {/* Vision */}
-      <div>
-        <h3 className="text-2xl font-semibold text-[#2E2E2E] mb-6">
-          Our Vision
-        </h3>
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
+                Become a globally recognized brand.
+              </p>
 
-        <p className="text-gray-600 mb-6 leading-relaxed">
-          Our vision is to become a globally recognized carpet brand from Bhadohi, 
-          known for quality, authenticity, and craftsmanship.
-        </p>
+              <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-gray-600">
+                <li>✓ Global expansion</li>
+                <li>✓ Promote Indian carpets</li>
+                <li>✓ Design innovation</li>
+                <li>✓ Preserve tradition</li>
+              </ul>
+            </div>
 
-        <ul className="space-y-3 text-gray-600">
-          <li>✓ Expand our reach to customers worldwide</li>
-          <li>✓ Promote Indian handmade carpets globally</li>
-          <li>✓ Continuously innovate in design and texture</li>
-          <li>✓ Preserve traditional carpet making for future generations</li>
-        </ul>
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
+          </div>
+        </div>
+      </section>
 
       {/* WHY CHOOSE */}
-     {/* WHY CHOOSE */}
-<section className="py-24 bg-[#F3EDE4]">
+      <section className="py-16 sm:py-20 lg:py-24 bg-[#F3EDE4]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
-  <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold">
+              Why Choose <span className="text-[#C49A3A]">QaleenGhar</span>
+            </h2>
+            <div className="w-20 sm:w-24 h-[2px] bg-[#C49A3A] mx-auto mt-3 sm:mt-4"></div>
+          </div>
 
-    {/* Title */}
-    <div className="text-center mb-16">
-      <h2 className="text-3xl md:text-4xl font-semibold text-[#2E2E2E]">
-        Why Choose <span className="text-[#C49A3A]">QaleenGhar</span>
-      </h2>
-      <div className="w-24 h-[2px] bg-[#C49A3A] mx-auto mt-4"></div>
-    </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
 
-    {/* Features */}
-    <div className="grid md:grid-cols-3 gap-10">
+            {[
+              "Since 1990 Experience",
+              "Bhadohi Heritage",
+              "Own Manufacturing",
+              "Hand-Tufted Specialists",
+              "Wide Range",
+              "Trusted Craftsmanship"
+            ].map((title, i) => (
+              <div
+                key={i}
+                className="group bg-white p-6 sm:p-8 rounded-lg shadow-sm hover:shadow-xl transition duration-300 border hover:border-[#C49A3A]/40"
+              >
+                <div className="text-[#C49A3A] text-2xl sm:text-3xl mb-3 sm:mb-4">★</div>
+                <h4 className="font-semibold text-base sm:text-lg mb-2">
+                  {title}
+                </h4>
+                <p className="text-sm sm:text-base text-gray-600">
+                  Premium craftsmanship and quality assurance.
+                </p>
+              </div>
+            ))}
 
-      {/* Card */}
-      <div className="group bg-white p-8 rounded-lg shadow-sm hover:shadow-xl transition duration-300 border border-transparent hover:border-[#C49A3A]/40">
-
-        <div className="text-[#C49A3A] text-3xl mb-4">★</div>
-
-        <h4 className="font-semibold text-lg mb-2">
-          Since 1990 Experience
-        </h4>
-
-        <p className="text-gray-600">
-          Over three decades of expertise in carpet manufacturing and craftsmanship.
-        </p>
-
-      </div>
-
-      {/* Card */}
-      <div className="group bg-white p-8 rounded-lg shadow-sm hover:shadow-xl transition duration-300 border border-transparent hover:border-[#C49A3A]/40">
-
-        <div className="text-[#C49A3A] text-3xl mb-4">✦</div>
-
-        <h4 className="font-semibold text-lg mb-2">
-          Bhadohi Heritage
-        </h4>
-
-        <p className="text-gray-600">
-          Authentic carpets originating from India's world-renowned carpet capital.
-        </p>
-
-      </div>
-
-      {/* Card */}
-      <div className="group bg-white p-8 rounded-lg shadow-sm hover:shadow-xl transition duration-300 border border-transparent hover:border-[#C49A3A]/40">
-
-        <div className="text-[#C49A3A] text-3xl mb-4">⚒</div>
-
-        <h4 className="font-semibold text-lg mb-2">
-          Own Manufacturing
-        </h4>
-
-        <p className="text-gray-600">
-          Direct production ensures strict quality control and authentic craftsmanship.
-        </p>
-
-      </div>
-
-      {/* Card */}
-      <div className="group bg-white p-8 rounded-lg shadow-sm hover:shadow-xl transition duration-300 border border-transparent hover:border-[#C49A3A]/40">
-
-        <div className="text-[#C49A3A] text-3xl mb-4">◆</div>
-
-        <h4 className="font-semibold text-lg mb-2">
-          Hand-Tufted Specialists
-        </h4>
-
-        <p className="text-gray-600">
-          Premium hand-tufted carpets known for durability and elegant designs.
-        </p>
-
-      </div>
-
-      {/* Card */}
-      <div className="group bg-white p-8 rounded-lg shadow-sm hover:shadow-xl transition duration-300 border border-transparent hover:border-[#C49A3A]/40">
-
-        <div className="text-[#C49A3A] text-3xl mb-4">⬚</div>
-
-        <h4 className="font-semibold text-lg mb-2">
-          Wide Range of Carpets
-        </h4>
-
-        <p className="text-gray-600">
-          Designs suitable for homes, offices, hotels, and commercial spaces.
-        </p>
-
-      </div>
-
-      {/* Card */}
-      <div className="group bg-white p-8 rounded-lg shadow-sm hover:shadow-xl transition duration-300 border border-transparent hover:border-[#C49A3A]/40">
-
-        <div className="text-[#C49A3A] text-3xl mb-4">✔</div>
-
-        <h4 className="font-semibold text-lg mb-2">
-          Trusted Craftsmanship
-        </h4>
-
-        <p className="text-gray-600">
-          Every carpet is crafted with precision, care, and attention to detail.
-        </p>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
+          </div>
+        </div>
+      </section>
 
     </div>
   );

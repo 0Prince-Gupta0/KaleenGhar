@@ -4,7 +4,7 @@ import {
   ShoppingCart,
   User,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,118 +23,154 @@ import { shoppingViewHeaderMenuItems, filterOptions } from "@/config";
 
 /* ================= MENU ================= */
 
-function MenuItems() {
+function MenuItems({ closeSheet }) {
   const navigate = useNavigate();
+  const [openMenu, setOpenMenu] = useState(null);
 
   const applyFilter = (key, value) => {
     sessionStorage.setItem("filters", JSON.stringify({ [key]: [value] }));
     navigate(`/shop/listing?${key}=${value}`);
+    setOpenMenu(null);
+    closeSheet?.();
   };
 
-  return (
-    <nav className="flex items-center gap-8">
-      {shoppingViewHeaderMenuItems.map((item) => {
-        const options = filterOptions[item.id];
+ return (
+  <nav className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8">
+    {shoppingViewHeaderMenuItems.map((item) => {
+      const options = filterOptions[item.id];
 
-        if (!options) {
-          return (
-            <span
-              key={item.id}
-              onClick={() => navigate(item.path)}
-              className="cursor-pointer text-sm font-medium hover:text-[#C9A24D]"
-            >
-              {item.label}
-            </span>
-          );
-        }
-
+      if (!options) {
         return (
-          <div key={item.id} className="relative group">
-            {/* MENU TITLE */}
-            <span className="cursor-pointer text-sm font-medium hover:text-[#C9A24D]">
-              {item.label}
-            </span>
+          <div
+            key={item.id}
+            onClick={() => {
+              navigate(item.path);
+              closeSheet?.();
+            }}
+            className="px-3 py-2 rounded-md text-sm font-medium hover:bg-[#F5EFE6] cursor-pointer"
+          >
+            {item.label}
+          </div>
+        );
+      }
 
-            {/* HOVER BRIDGE (IMPORTANT FIX) */}
-            <div className="absolute left-0 top-full h-2 w-full" />
+      return (
+        <div key={item.id} className="relative group">
+          
+          {/* TITLE */}
+          <div
+            onClick={() =>
+              setOpenMenu(openMenu === item.id ? null : item.id)
+            }
+            className="px-3 py-2 rounded-md text-sm font-medium hover:bg-[#F5EFE6] hover:text-[#C9A24D] cursor-pointer lg:hover:bg-transparent"
+          >
+            {item.label}
+          </div>
 
-            {/* DROPDOWN */}
-           <div
-  className="
-    absolute left-0 top-[calc(100%+6px)]
-    w-52
-    bg-white
-    border
-    rounded-xl
-    shadow-lg
-    opacity-0
-    invisible
-    group-hover:opacity-100
-    group-hover:visible
-    transition-all
-    duration-200
-    z-50
-  "
->
-
+          {/* ================= MOBILE ================= */}
+          {openMenu === item.id && (
+            <div className="ml-4 mt-2 border-l pl-3 flex flex-col gap-1 lg:hidden">
               {options.map((opt) => (
                 <div
                   key={opt.id}
                   onClick={() => applyFilter(item.id, opt.id)}
-                  className="
-                    px-4 py-2
-                    text-sm
-                    cursor-pointer
-                    hover:bg-[#F5EFE6]
-                    hover:rounded-xl
-                    whitespace-nowrap
-                  "
+                  className="text-sm py-1 cursor-pointer hover:text-[#C9A24D]"
                 >
                   {opt.label}
                 </div>
               ))}
             </div>
-          </div>
-        );
-      })}
-    </nav>
-  );
-}
+          )}
 
+          {/* ================= DESKTOP ================= */}
+          <div
+  className="
+    hidden lg:block
+    absolute left-0 top-[calc(100%+10px)]
+    w-56
+    bg-white
+    border border-[#E8E2D9]
+    rounded-2xl
+    shadow-[0_10px_30px_rgba(0,0,0,0.08)]
+    opacity-0 invisible translate-y-2
+    group-hover:opacity-100
+    group-hover:visible
+    group-hover:translate-y-0
+    transition-all duration-300 ease-out
+    z-50
+  "
+>
+  {options.map((opt) => (
+    <div
+      key={opt.id}
+      onClick={() => applyFilter(item.id, opt.id)}
+      className="
+        px-5 py-3
+        text-sm font-medium
+        cursor-pointer
+        transition
+        hover:bg-[#F8F4EC]
+        hover:text-[#C9A24D]
+        first:rounded-t-2xl
+        last:rounded-b-2xl
+      "
+    >
+      {opt.label}
+    </div>
+  ))}
+</div>
+
+        </div>
+      );
+    })}
+  </nav>
+);
+}
 
 /* ================= HEADER RIGHT ================= */
 
-function HeaderRightContent() {
+function HeaderRightContent({
+  openCart,
+  setOpenCart,
+  closeMenu,
+  isMobile = false,
+}) {
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [openCart, setOpenCart] = useState(false);
+  const location = useLocation();
 
-  //console.log(cartItems)
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchCartItems(user.id));
     }
   }, [user, dispatch]);
 
+  // ✅ auto close cart on route change
+  useEffect(() => {
+    setOpenCart(false);
+  }, [location.pathname]);
+
   const cartCount = cartItems?.length || 0;
 
   return (
-    <div className="flex items-center gap-4">
-
+    <div className={`flex items-center gap-4 ${isMobile ? "w-full justify-between" : ""}`}>
       {/* CART */}
       {user && (
         <Sheet open={openCart} onOpenChange={setOpenCart}>
           <Button
             variant="ghost"
-            onClick={() => setOpenCart(true)}
-            className="relative hover:bg-[#F5EFE6]"
+            onClick={() => {
+              setOpenCart(true);
+              closeMenu?.(); // ✅ close hamburger
+            }}
+            className="relative"
           >
             <ShoppingCart size={20} />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#C9A24D] text-black text-xs font-bold px-1.5 rounded-full">
+              <span className="absolute -top-1 -right-1 bg-[#C9A24D] text-black text-xs px-1.5 rounded-full">
                 {cartCount}
               </span>
             )}
@@ -143,6 +179,7 @@ function HeaderRightContent() {
           <UserCartWrapper
             cartItems={cartItems || []}
             setOpenCartSheet={setOpenCart}
+            closeMenu={closeMenu} // ✅ pass down
           />
         </Sheet>
       )}
@@ -150,68 +187,91 @@ function HeaderRightContent() {
       {/* PROFILE */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-[#F5EFE6]">
+          <button className="flex items-center gap-2">
             <Avatar className="h-9 w-9 bg-black">
-              <AvatarFallback className="text-white font-semibold">
+              <AvatarFallback className="text-white">
                 {user?.userName?.[0]?.toUpperCase() ?? "G"}
               </AvatarFallback>
             </Avatar>
 
-            <span className="hidden md:block text-sm font-medium">
-              {user ? user.userName : "Guest"}
-            </span>
+            {!isMobile && (
+              <span className="text-sm">
+                {user ? user.userName : "Guest"}
+              </span>
+            )}
           </button>
         </DropdownMenuTrigger>
+<DropdownMenuContent
+  align="end"
+  className="w-64 rounded-xl shadow-xl border bg-white p-0 overflow-hidden"
+>
+  {user ? (
+    <>
+      {/* HEADER */}
+      <div className="px-4 py-3 border-b">
+        <p className="text-xs text-gray-500">Signed in as</p>
+        <p className="font-semibold truncate">
+          {user?.userName || user?.name}
+        </p>
+      </div>
 
-        <DropdownMenuContent
-          align="end"
-          className="w-64 rounded-xl shadow-xl border bg-white"
+      {/* OPTIONS */}
+      <DropdownMenuItem
+        onClick={() => {
+          closeMenu?.();
+          navigate("/shop/account");
+        }}
+        className="cursor-pointer"
+      >
+        My Account
+      </DropdownMenuItem>
+
+      <DropdownMenuItem
+        onClick={() => dispatch(logoutUser())}
+        className="text-red-600 cursor-pointer"
+      >
+        Logout
+      </DropdownMenuItem>
+    </>
+
+
+
+
+  ) : (
+    <>
+      {/* HEADER */}
+      <div className="px-4 py-3 border-b">
+        <p className="text-xs text-gray-500">Welcome</p>
+        <p className="text-sm font-semibold">
+          Sign in to continue
+        </p>
+      </div>
+
+      {/* BUTTONS */}
+      <div className="p-3 space-y-2">
+        <button
+          onClick={() => {
+            closeMenu?.();
+            navigate("/auth/login");
+          }}
+          className="w-full bg-[#C9A24D] text-black py-2 rounded-md font-medium hover:opacity-90 transition"
         >
-          {user ? (
-            <>
-              <div className="px-4 py-3 border-b">
-                <p className="text-xs text-gray-500">Signed in as</p>
-                <p className="font-semibold truncate">{user.userName}</p>
-              </div>
+          Login
+        </button>
 
-              <DropdownMenuItem onClick={() => navigate("/shop/account")}>
-                <User className="mr-2 h-4 w-4" />
-                My Account
-              </DropdownMenuItem>
-
-              <DropdownMenuItem
-                onClick={() => dispatch(logoutUser())}
-                className="text-red-600"
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                Logout
-              </DropdownMenuItem>
-            </>
-          ) : (
-            <>
-              <div className="px-4 py-3 border-b">
-                <p className="text-xs text-gray-500">Welcome</p>
-                <p className="text-sm font-semibold">Sign in to continue</p>
-              </div>
-
-              <div className="p-2 space-y-2">
-                <DropdownMenuItem
-                  onClick={() => navigate("/auth/login")}
-                  className="justify-center bg-[#C9A24D] text-black font-medium rounded-md"
-                >
-                  Login
-                </DropdownMenuItem>
-
-                <DropdownMenuItem
-                  onClick={() => navigate("/auth/register")}
-                  className="justify-center border rounded-md"
-                >
-                  Create Account
-                </DropdownMenuItem>
-              </div>
-            </>
-          )}
-        </DropdownMenuContent>
+        <button
+          onClick={() => {
+            closeMenu?.();
+            navigate("/auth/register");
+          }}
+          className="w-full border py-2 rounded-md hover:bg-gray-50 transition"
+        >
+          Create Account
+        </button>
+      </div>
+    </>
+  )}
+</DropdownMenuContent>
       </DropdownMenu>
     </div>
   );
@@ -220,37 +280,64 @@ function HeaderRightContent() {
 /* ================= HEADER ================= */
 
 export default function ShoppingHeader() {
+  const [openSheet, setOpenSheet] = useState(false);
+  const [openCart, setOpenCart] = useState(false);
+
   return (
     <header className="sticky top-0 z-50 bg-[#FFFCF7] border-b">
       <div className="h-16 px-6 flex items-center justify-between">
-
-        <Link
-          to="/shop/home"
-          className="font-bold tracking-widest text-[#C9A24D]"
-        >
+        
+        {/* LOGO */}
+        <Link to="/shop/home" className="font-bold tracking-widest text-[#C9A24D]">
           QALEEN GHAR
         </Link>
 
+        {/* DESKTOP MENU */}
         <div className="hidden lg:block">
           <MenuItems />
         </div>
 
+        {/* DESKTOP RIGHT */}
         <div className="hidden lg:block">
-          <HeaderRightContent />
+          <HeaderRightContent
+            openCart={openCart}
+            setOpenCart={setOpenCart}
+            closeMenu={() => setOpenSheet(false)}
+          />
         </div>
 
         {/* MOBILE */}
-        <Sheet>
+        <Sheet open={openSheet} onOpenChange={setOpenSheet}>
           <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="lg:hidden">
+            <Button
+              variant="outline"
+              size="icon"
+              className="lg:hidden"
+              onClick={() => setOpenSheet(true)}
+            >
               <Menu />
             </Button>
           </SheetTrigger>
 
-          <SheetContent side="left">
-            <MenuItems />
-            <div className="mt-6">
-              <HeaderRightContent />
+          <SheetContent className="w-[300px] p-0 bg-[#FFFCF7] flex flex-col h-full">
+            {/* HEADER */}
+            <div className="px-5 py-4 border-b font-bold text-[#C9A24D]">
+              QALEEN GHAR
+            </div>
+
+            {/* MENU */}
+            <div className="flex-1 overflow-y-auto p-5">
+              <MenuItems closeSheet={() => setOpenSheet(false)} />
+            </div>
+
+            {/* FOOTER */}
+            <div className="border-t p-4">
+              <HeaderRightContent
+                isMobile
+                openCart={openCart}
+                setOpenCart={setOpenCart}
+                closeMenu={() => setOpenSheet(false)}
+              />
             </div>
           </SheetContent>
         </Sheet>
