@@ -348,19 +348,62 @@ function ProductDetailsPage() {
             {section === "description" && productDetails.description}
 
             {section === "care" && (
-              <>
-                Vacuum your rug regularly to remove dust and debris.  
-                Spot clean using a mild detergent and avoid excessive moisture.  
-                Professional cleaning once a year helps maintain texture and color.
-              </>
+              <div className="mt-6 space-y-3 text-sm text-gray-700 leading-relaxed">
+  <p>• Vacuum regularly to remove dust and maintain texture.</p>
+  <p>• Blot spills immediately—never rub.</p>
+  <p>• Clean gently using mild detergent when needed.</p>
+  <p>• Avoid excess moisture to preserve fibers.</p>
+  <p>• Rotate periodically for even wear.</p>
+  <p>• Protect from direct sunlight to prevent fading.</p>
+  <p>• Use a rug pad for added safety and longevity.</p>
+  <p>• Professional cleaning once a year is recommended.</p>
+</div>
             )}
 
             {section === "shipping" && (
-              <>
-                Orders are dispatched within 24–48 hours.  
-                Delivery typically takes 3–5 business days depending on location.  
-                Custom rugs may require additional processing time.
-              </>
+             <div className="mt-6 space-y-4 text-sm text-gray-700 leading-relaxed">
+
+  <p>
+    At QaleenGhar, we ensure safe and timely delivery of our carpets to customers worldwide.
+  </p>
+
+  <div className="space-y-2">
+    <p className="font-medium text-[#1F2933]">Order Processing</p>
+    <p>• Orders are processed within 1–3 business days.</p>
+    <p>• All orders are shipped from Noida, Uttar Pradesh, India.</p>
+    <p>• Custom or made-to-order carpets may require additional production time.</p>
+  </div>
+
+  <div className="space-y-2">
+    <p className="font-medium text-[#1F2933]">Shipping Time</p>
+    <p>• India: 5–10 business days</p>
+    <p>• International: 7–20 business days</p>
+    <p>• Delivery timelines may vary due to logistics or external delays.</p>
+  </div>
+
+  <div className="space-y-2">
+    <p className="font-medium text-[#1F2933]">Shipping Charges</p>
+    <p>• Shipping charges (if applicable) are calculated at checkout.</p>
+    <p>• Free shipping offers may be available on select orders.</p>
+  </div>
+
+  <div className="space-y-2">
+    <p className="font-medium text-[#1F2933]">Order Tracking</p>
+    <p>• Tracking details will be shared via email or SMS after dispatch.</p>
+  </div>
+
+  <div className="space-y-2">
+    <p className="font-medium text-[#1F2933]">Delivery Issues</p>
+    <p>• For delays, damage, or lost shipments, contact us at:</p>
+    <p className="text-[#C9A24D]">qaleengharr@gmail.com</p>
+  </div>
+
+  <div className="space-y-2">
+    <p className="font-medium text-[#1F2933]">International Shipping</p>
+    <p>• Custom duties, taxes, or import charges (if applicable) must be paid by the customer.</p>
+  </div>
+
+</div>
             )}
           </div>
         )}

@@ -34,7 +34,7 @@ const toastVariants = cva(
   `
   relative flex w-full items-start justify-between gap-3
 
-  rounded-xl border px-4 py-3
+  rounded-xl border px-4 py-3 pr-10
 
   shadow-[0_12px_30px_rgba(0,0,0,0.12)]
   backdrop-blur-md

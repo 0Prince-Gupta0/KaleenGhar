@@ -253,7 +253,9 @@ return (
       <span>Total</span>
       <span>₹{totalCartAmount}</span>
     </div>
-
+<p className="mt-2 text-xs text-gray-500">
+  *Delivery charges, if applicable, will be payable upon delivery.
+</p>
     <Button
       onClick={handleRazorpayPayment}
       disabled={isCartEmpty}
