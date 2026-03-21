@@ -57,8 +57,8 @@ function ProductDetailsPage() {
   const isOnSale = salePrice > 0 && salePrice < price;
 
   const discountPercent = isOnSale
-    ? Math.round(((price - salePrice) / price) * 100)
-    : 0;
+  ? ((price - salePrice) / price * 100).toFixed(1)
+  : "0.0";
 
   const ratingCounts = [5, 4, 3, 2, 1].map((star) => ({
     star,

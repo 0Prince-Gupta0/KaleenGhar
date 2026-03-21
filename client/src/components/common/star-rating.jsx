@@ -2,8 +2,9 @@ import { StarIcon } from "lucide-react";
 import { Button } from "../ui/button";
 
 function StarRatingComponent({ rating, handleRatingChange }) {
-  return (
-    <div className="flex items-center justify-center sm:justify-start gap-0.5 sm:gap-1">
+  const isClickable = !!handleRatingChange;
+ return (
+    <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map((star) => {
         const isActive = star <= rating;
 
@@ -13,32 +14,17 @@ function StarRatingComponent({ rating, handleRatingChange }) {
             type="button"
             variant="ghost"
             size="icon"
-            aria-label={`Rate ${star} star`}
+            disabled={!isClickable}
             onClick={
-              handleRatingChange ? () => handleRatingChange(star) : undefined
+              isClickable ? () => handleRatingChange(star) : undefined
             }
             className={`
-              rounded-full
-              transition-all duration-200
-              p-0 sm:p-1   /* 🔥 FIX: remove extra padding on mobile */
-              ${
-                isActive
-                  ? "text-[#C9A24D]"
-                  : "text-muted-foreground"
-              }
-              hover:bg-[#F5EFE6]
+              ${isActive ? "text-[#C9A24D]" : "text-muted-foreground"}
+              ${isClickable ? "cursor-pointer hover:bg-[#F5EFE6]" : "cursor-default hover:bg-transparent"}
             `}
           >
             <StarIcon
-              className={`
-                h-4 w-4 sm:h-5 sm:w-5   /* 🔥 responsive star size */
-                transition-all
-                ${
-                  isActive
-                    ? "fill-[#C9A24D]"
-                    : "fill-transparent"
-                }
-              `}
+              className={`${isActive ? "fill-[#C9A24D]" : "fill-transparent"}`}
             />
           </Button>
         );

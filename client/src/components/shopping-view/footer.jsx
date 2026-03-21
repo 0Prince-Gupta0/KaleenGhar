@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Facebook, Instagram, MapPin } from "lucide-react";
+import { Facebook, Instagram, MapPin, Phone, Mail } from "lucide-react";
 
 function Footer() {
   return (
@@ -68,29 +68,60 @@ function Footer() {
 
           {/* VISIT US */}
           <div>
-            <h4 className="text-xs sm:text-sm font-semibold uppercase tracking-wider mb-4 sm:mb-6">
-              Visit Us
-            </h4>
+  <h4 className="text-xs sm:text-sm font-semibold uppercase tracking-wider mb-4 sm:mb-6">
+    Visit Us
+  </h4>
 
-            <a
-              href="https://maps.app.goo.gl/QfPKM6EijUKsk2s97"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block rounded-xl overflow-hidden border border-white/10 hover:border-[#C9A24D] transition"
-            >
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3504.2820747153537!2d77.36280437529804!3d28.561291275703734!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce50043460f1b%3A0x5425f44741a55d6f!2sQaleen%20Ghar!5e0!3m2!1sen!2sus!4v1773685210427!5m2!1sen!2sus"
-                className="w-full h-[140px] sm:h-[170px]"
-                style={{ border: 0 }}
-                loading="lazy"
-              />
-            </a>
+  {/* Map */}
+  <a
+    href="https://maps.app.goo.gl/QfPKM6EijUKsk2s97"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="block rounded-xl overflow-hidden border border-white/10 hover:border-[#C9A24D] transition"
+  >
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3504.2820747153537!2d77.36280437529804!3d28.561291275703734!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce50043460f1b%3A0x5425f44741a55d6f!2sQaleen%20Ghar!5e0!3m2!1sen!2sus!4v1773685210427!5m2!1sen!2sus"
+      className="w-full h-[140px] sm:h-[170px]"
+      style={{ border: 0 }}
+      loading="lazy"
+    />
+  </a>
 
-            <p className="flex items-start gap-2 text-xs sm:text-sm text-[#9CA3AF] mt-3 sm:mt-4">
-              <MapPin size={16} />
-              J-152 Sector-41, Noida
-            </p>
-          </div>
+  {/* Address */}
+  <a
+    href="https://maps.app.goo.gl/QfPKM6EijUKsk2s97"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex items-start gap-2 text-xs sm:text-sm text-[#9CA3AF] mt-3 sm:mt-4 hover:text-[#C9A24D] transition"
+  >
+    <MapPin size={16} />
+    J-152 Sector-41, Noida
+  </a>
+
+  {/* Phone */}
+  <a
+    href="tel:+919810868799" 
+    className="flex items-center gap-2 text-xs sm:text-sm text-[#9CA3AF] mt-2 hover:text-[#C9A24D] transition"
+  >
+    <Phone size={16} />
+     +91 9810868799
+  </a>
+<a
+    href="tel:+919810875599" 
+    className="flex items-center gap-2 text-xs sm:text-sm text-[#9CA3AF] mt-2 hover:text-[#C9A24D] transition"
+  >
+    <Phone size={16} />
+     +91 9810875599
+  </a>
+  {/* Email */}
+  <a
+    href="mailto:qaleengharr@gmail.com" 
+    className="flex items-center gap-2 text-xs sm:text-sm text-[#9CA3AF] mt-2 hover:text-[#C9A24D] transition"
+  >
+    <Mail size={16} />
+    qaleengharr@gmail.com
+  </a>
+</div>
 
           {/* SOCIAL */}
           <div>

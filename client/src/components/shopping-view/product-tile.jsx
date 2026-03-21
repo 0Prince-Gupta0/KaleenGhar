@@ -1,5 +1,5 @@
+import { filterOptions } from "@/config";
 import { Star, ShoppingCart } from "lucide-react";
-
 function ShoppingProductTile({ product, handleAddtoCart, onClick }) {
   const sizes = product?.sizes || [];
 
@@ -66,7 +66,10 @@ function ShoppingProductTile({ product, handleAddtoCart, onClick }) {
 
         {/* CATEGORY */}
         <p className="text-[10px] uppercase tracking-widest text-gray-400">
-          {product?.category}
+        {
+  filterOptions.category.find(
+    (item) => item.id === product?.category
+  )?.label || ""}
         </p>
 
         {/* TITLE */}
