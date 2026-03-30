@@ -40,11 +40,21 @@ function AdminProducts() {
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
   const [imageLoadingState, setImageLoadingState] = useState(false);
   const [currentEditedId, setCurrentEditedId] = useState(null);
-
+const [searchTerm, setSearchTerm] = useState("");
   const { productList } = useSelector((state) => state.adminProducts);
   const dispatch = useDispatch();
   const { toast } = useToast();
 
+
+  const filteredProducts = productList?.filter((product) => {
+  const term = searchTerm.toLowerCase();
+
+  return (
+    product.title?.toLowerCase().includes(term) ||
+    product.category?.toLowerCase().includes(term) ||
+    product.color?.toLowerCase().includes(term)
+  );
+});
   /* ================= IMAGE ADD ================= */
   useEffect(() => {
     if (uploadedImageUrl) {
@@ -150,14 +160,44 @@ function AdminProducts() {
 
   return (
     <Fragment>
-      <div className="mb-5 flex justify-end">
-        <Button onClick={() => setOpenCreateProductsDialog(true)}>
-          Add New Product
-        </Button>
-      </div>
+      <div className="mb-5 flex flex-col sm:flex-row justify-between gap-3">
+  
+  {/* SEARCH */}
+  <div className="relative w-full sm:w-[320px]">
+  <input
+    type="text"
+    placeholder="Search products..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    className="
+      w-full 
+      bg-[#FFFCF7] 
+      border border-[#E6DED1] 
+      rounded-lg 
+      px-10 py-2.5 
+      text-sm 
+      outline-none 
+      focus:ring-2 focus:ring-[#C9A65B]/40 
+      focus:border-[#C9A65B] 
+      placeholder:text-gray-400
+      transition
+    "
+  />
+
+  {/* 🔍 ICON */}
+  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+    🔍
+  </span>
+</div>
+
+  {/* ADD BUTTON */}
+  <Button onClick={() => setOpenCreateProductsDialog(true)}>
+    Add New Product
+  </Button>
+</div>
 
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {productList?.map((product) => (
+        {filteredProducts?.map((product) => (
           <AdminProductTile
             key={product._id}
             product={product}
@@ -172,6 +212,7 @@ function AdminProducts() {
             setOpenCreateProductsDialog={setOpenCreateProductsDialog}
           />
         ))}
+        
       </div>
 
       <Sheet open={openCreateProductsDialog} onOpenChange={resetForm}>

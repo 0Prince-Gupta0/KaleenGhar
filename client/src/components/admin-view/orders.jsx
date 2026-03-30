@@ -43,26 +43,37 @@ function AdminOrdersView() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [payment, setPayment] = useState("all");
-
+const [sortOrder, setSortOrder] = useState("newest");
   useEffect(() => {
     dispatch(getAllOrdersForAdmin());
   }, [dispatch]);
 
   const filteredOrders = useMemo(() => {
-    return orderList.filter((order) => {
-      const matchSearch =
-        order._id.toLowerCase().includes(search.toLowerCase()) ||
-        String(order.totalAmount).includes(search);
+  let filtered = orderList.filter((order) => {
+    const matchSearch =
+      order._id.toLowerCase().includes(search.toLowerCase()) ||
+      String(order.totalAmount).includes(search);
 
-      const matchStatus =
-        status === "all" || order.orderStatus === status;
+    const matchStatus =
+      status === "all" || order.orderStatus === status;
 
-      const matchPayment =
-        payment === "all" || order.paymentStatus === payment;
+    const matchPayment =
+      payment === "all" || order.paymentStatus === payment;
 
-      return matchSearch && matchStatus && matchPayment;
-    });
-  }, [orderList, search, status, payment]);
+    return matchSearch && matchStatus && matchPayment;
+  });
+
+  // SORTING
+  filtered.sort((a, b) => {
+    if (sortOrder === "newest") {
+      return new Date(b.orderDate) - new Date(a.orderDate);
+    } else {
+      return new Date(a.orderDate) - new Date(b.orderDate);
+    }
+  });
+
+  return filtered;
+}, [orderList, search, status, payment, sortOrder]);
 
   const openDetails = (id) => {
     dispatch(getOrderDetailsForAdmin(id)).then(() =>
@@ -124,7 +135,17 @@ function AdminOrdersView() {
       ))}
     </SelectContent>
   </Select>
+{/* SORT */}
+<Select value={sortOrder} onValueChange={setSortOrder}>
+  <SelectTrigger className="w-full sm:w-[200px] bg-[#FFFCF7] border border-[#E6DED1]">
+    <SelectValue placeholder="Sort by" />
+  </SelectTrigger>
 
+  <SelectContent>
+    <SelectItem value="newest">Newest First</SelectItem>
+    <SelectItem value="oldest">Oldest First</SelectItem>
+  </SelectContent>
+</Select>
 </div>
             </div>
           </CardHeader>
