@@ -27,10 +27,10 @@ const getAllOrdersOfAllUsers = async (req, res) => {
 const getOrderDetailsForAdmin = async (req, res) => {
   try {
     const { id } = req.params;
-console.log("Order ID:", id); // Debugging log
+//console.log("Order ID:", id); // Debugging log
    const orders = await Order.findById(id)
   .populate("userId", "userName email"); 
-console.log("Fetched Orders:", orders); // Debugging log
+//console.log("Fetched Orders:", orders); // Debugging log
     if (!orders) {
       return res.status(404).json({
         success: false,
@@ -43,7 +43,7 @@ console.log("Fetched Orders:", orders); // Debugging log
       data: orders,
     });
   } catch (e) {
-    console.log(e);
+   // console.log(e);
     res.status(500).json({
       success: false,
       message: "Some error occured!",
