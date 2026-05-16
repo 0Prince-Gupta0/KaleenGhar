@@ -24,6 +24,7 @@ import {
   deleteAddress,
 } from "@/store/shop/address-slice";
 import EditAddressDialog from "@/components/shopping-view/editAddressDialog";
+import ShoppingOrderDetailsView from "@/components/shopping-view/order-details";
 
 function ShoppingAccount() {
   const dispatch = useDispatch();
@@ -297,12 +298,7 @@ const [editingAddress, setEditingAddress] = useState(null);
   {/* ORDER DETAILS */}
   <Dialog open={!!openOrder} onOpenChange={() => setOpenOrder(null)}>
     {openOrder && (
-      <DialogContent className="w-[95%] sm:max-w-[700px] rounded-2xl">
-        <h2 className="text-lg font-semibold">Order Details</h2>
-        <Separator />
-        <p><b>Order ID:</b> {openOrder._id}</p>
-        <p><b>Total:</b> ₹{openOrder.totalAmount}</p>
-      </DialogContent>
+      <ShoppingOrderDetailsView orderDetails={openOrder} />
     )}
   </Dialog>
 </section>

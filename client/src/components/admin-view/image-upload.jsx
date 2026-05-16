@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { Button } from "../ui/button";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
+import { useToast } from "../ui/use-toast";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -19,6 +20,7 @@ function ProductImageUpload({
   isCustomStyling = false,
 }) {
   const inputRef = useRef(null);
+  const { toast } = useToast();
 
   function handleImageFileChange(event) {
     const selectedFile = event.target.files?.[0];
@@ -57,6 +59,12 @@ function ProductImageUpload({
       }
     } catch (error) {
       console.error("Image upload failed", error);
+      toast({
+        title: "Upload Failed",
+        description: error.response?.data?.message || "Unsupported file format",
+        variant: "destructive"
+      });
+      handleRemoveImage();
     } finally {
       setImageLoadingState(false);
     }

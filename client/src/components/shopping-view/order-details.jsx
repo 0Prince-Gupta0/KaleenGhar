@@ -1,104 +1,120 @@
 import { useSelector } from "react-redux";
-import { Badge } from "../ui/badge";
 import { DialogContent } from "../ui/dialog";
-import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
+import { ORDER_FLOW } from "@/config";
+import StatusDot from "../common/status-dots";
 
 function ShoppingOrderDetailsView({ orderDetails }) {
   const { user } = useSelector((state) => state.auth);
 
+  if (!orderDetails) return null;
+
+  const current = ORDER_FLOW[orderDetails.orderStatus] || {
+    label: orderDetails.orderStatus || "pending",
+    dot: "bg-gray-500",
+  };
+
   return (
-    <DialogContent className="sm:max-w-[600px]">
-      <div className="grid gap-6">
-        {/* ================= ORDER INFO ================= */}
-        <div className="grid gap-2">
-          <div className="flex mt-6 items-center justify-between">
-            <p className="font-medium">Order ID</p>
-            <Label>{orderDetails?._id || "-"}</Label>
-          </div>
+    <DialogContent className="sm:max-w-[750px] max-h-[90vh] overflow-y-auto rounded-2xl bg-[#FFFCF7] p-6 space-y-5">
+      
+      {/* HEADER */}
+      <h2 className="text-xl font-semibold">
+        Order Details
+      </h2>
 
-          <div className="flex mt-2 items-center justify-between">
-            <p className="font-medium">Order Date</p>
-            <Label>
-              {orderDetails?.orderDate?.split("T")?.[0] || "-"}
-            </Label>
-          </div>
+      {/* SUMMARY */}
+      <div className="grid gap-2 text-sm">
+        <p><b>Order ID:</b> {orderDetails._id}</p>
 
-          <div className="flex mt-2 items-center justify-between">
-            <p className="font-medium">Order Price</p>
-            <Label>₹{orderDetails?.totalAmount ?? 0}</Label>
-          </div>
+        <p>
+          <b>Order Date:</b>{" "}
+          {new Date(orderDetails.orderDate).toLocaleString()}
+        </p>
 
-          <div className="flex mt-2 items-center justify-between">
-            <p className="font-medium">Payment Method</p>
-            <Label>{orderDetails?.paymentMethod || "-"}</Label>
-          </div>
+        <p><b>Total Amount:</b> ₹{orderDetails.totalAmount}</p>
 
-          <div className="flex mt-2 items-center justify-between">
-            <p className="font-medium">Payment Status</p>
-            <Label>{orderDetails?.paymentStatus || "-"}</Label>
-          </div>
+        <p><b>Payment ID:</b> {orderDetails.paymentId || "-"}</p>
+        <p><b>Payment Method:</b> {orderDetails.paymentMethod || "-"}</p>
 
-          <div className="flex mt-2 items-center justify-between">
-            <p className="font-medium">Order Status</p>
-            <Badge
-              className={`py-1 px-3 capitalize ${
-                orderDetails?.orderStatus === "confirmed"
-                  ? "bg-green-500"
-                  : orderDetails?.orderStatus === "rejected"
-                  ? "bg-red-600"
-                  : "bg-black"
-              }`}
-            >
-              {orderDetails?.orderStatus || "pending"}
-            </Badge>
-          </div>
-        </div>
+        <div className="flex gap-3 mt-2">
+          <StatusDot
+            color={
+              orderDetails.paymentStatus === "paid"
+                ? "bg-green-500"
+                : "bg-yellow-500"
+            }
+            label={orderDetails.paymentStatus}
+            tooltip="Payment status"
+          />
 
-        <Separator />
-
-        {/* ================= ITEMS ================= */}
-        <div className="grid gap-2">
-          <div className="font-medium">Order Details</div>
-
-          <ul className="grid gap-3">
-            {orderDetails?.cartItems?.length > 0 ? (
-              orderDetails.cartItems.map((item, idx) => (
-                <li
-                  key={idx}
-                  className="flex items-center justify-between text-sm"
-                >
-                  <span>{item?.title}</span>
-                  <span>x{item?.quantity}</span>
-                  <span>₹{item?.price}</span>
-                </li>
-              ))
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                No items found
-              </p>
-            )}
-          </ul>
-        </div>
-
-        <Separator />
-
-        {/* ================= SHIPPING ================= */}
-        <div className="grid gap-2">
-          <div className="font-medium">Shipping Info</div>
-
-          <div className="grid gap-1 text-muted-foreground text-sm">
-            <span>{user?.userName || "-"}</span>
-            <span>{orderDetails?.addressInfo?.address || "-"}</span>
-            <span>{orderDetails?.addressInfo?.city || "-"}</span>
-            <span>{orderDetails?.addressInfo?.pincode || "-"}</span>
-            <span>{orderDetails?.addressInfo?.phone || "-"}</span>
-            {orderDetails?.addressInfo?.notes && (
-              <span>{orderDetails.addressInfo.notes}</span>
-            )}
-          </div>
+          <StatusDot
+            color={current.dot}
+            label={current.label}
+            tooltip="Order status"
+          />
         </div>
       </div>
+
+      <Separator />
+
+      {/* ITEMS */}
+      <div>
+        <h4 className="font-medium mb-3">Ordered Items</h4>
+
+        <div className="space-y-3">
+          {orderDetails.cartItems?.map((item, index) => (
+            <div
+              key={index}
+              className="flex gap-4 border rounded-xl p-3 bg-white"
+            >
+              {/* IMAGE */}
+              <img
+                src={item.image || "/placeholder.png"}
+                alt={item.title}
+                className="w-16 h-16 object-cover rounded-md border"
+              />
+
+              {/* INFO */}
+              <div className="flex-1 text-sm">
+                <p className="font-medium">{item.title}</p>
+
+                <p className="text-muted-foreground">
+                  Size: {item.size || "N/A"}
+                </p>
+
+                <p>
+                  Qty: {item.quantity} × ₹{item.price}
+                </p>
+              </div>
+
+              {/* TOTAL */}
+              <div className="text-sm font-semibold">
+                ₹{item.price * item.quantity}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <Separator />
+
+      {/* SHIPPING */}
+      <div className="bg-white rounded-xl border p-4 text-sm">
+        <h4 className="font-medium mb-2">Shipping Info</h4>
+        <p className="font-medium">{user?.userName || "-"}</p>
+        <p>{orderDetails.addressInfo?.address}</p>
+        <p>
+          {orderDetails.addressInfo?.city},{" "}
+          {orderDetails.addressInfo?.pincode}
+        </p>
+        <p>📞 {orderDetails.addressInfo?.phone}</p>
+        {orderDetails.addressInfo?.notes && (
+          <p className="text-muted-foreground mt-1 text-xs">
+            Notes: {orderDetails.addressInfo.notes}
+          </p>
+        )}
+      </div>
+
     </DialogContent>
   );
 }

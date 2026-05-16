@@ -14,7 +14,12 @@ const router = express.Router();
 
 router.use(authMiddleware, adminMiddleware);
 
-router.post("/upload-image", upload.single("my_file"), handleImageUpload);
+router.post("/upload-image", (req, res, next) => {
+  upload.single("my_file")(req, res, (err) => {
+    if (err) return res.status(400).json({ success: false, message: err.message });
+    next();
+  });
+}, handleImageUpload);
 router.post("/add", addProduct);
 router.put("/edit/:id", editProduct);
 router.delete("/delete/:id", deleteProduct);

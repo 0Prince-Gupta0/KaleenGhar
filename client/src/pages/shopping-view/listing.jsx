@@ -83,7 +83,9 @@ function ShoppingListing() {
       if (searchInput) params.set("search", searchInput);
       else params.delete("search");
 
-      setSearchParams(params);
+      if (params.toString() !== searchParams.toString()) {
+        setSearchParams(params, { replace: true });
+      }
     }, 400);
 
     return () => clearTimeout(delayDebounce);
@@ -103,20 +105,20 @@ function ShoppingListing() {
       ? params.set(section, updated.join(","))
       : params.delete(section);
 
-    setSearchParams(params);
+    setSearchParams(params, { replace: true });
   };
 
   const handleSortChange = (value) => {
     const params = new URLSearchParams(searchParams);
     params.set("sort", value);
-    setSearchParams(params);
+    setSearchParams(params, { replace: true });
   };
 
   const clearAllFilters = () => {
     const params = new URLSearchParams();
     if (search) params.set("search", search);
     if (sort) params.set("sort", sort);
-    setSearchParams(params);
+    setSearchParams(params, { replace: true });
   };
 
   /* ================= CART ================= */

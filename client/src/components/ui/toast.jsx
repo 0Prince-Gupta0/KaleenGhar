@@ -13,7 +13,7 @@ const ToastViewport = React.forwardRef(
       ref={ref}
       className={cn(
         `
-          fixed z-50 flex flex-col gap-3 p-4
+          fixed z-[9999] flex flex-col gap-3 p-4
 
   /* MOBILE FIX */
   bottom-4 left-0 right-0 px-4

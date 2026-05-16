@@ -41,14 +41,27 @@ function AddAddressForm({
     // console.log(form);
   }, [mode, initialData]);
 
+  const isPhoneValid = /^[0-9]{10}$/.test(form.phone.trim());
+  const isPincodeValid = /^[1-9][0-9]{5}$/.test(form.pincode.trim());
+
   const isFormValid =
-    form.address.trim() &&
-    form.city.trim() &&
-    form.pincode.trim() &&
-    form.phone.trim();
+    form.address.trim() !== "" &&
+    form.city.trim() !== "" &&
+    isPincodeValid &&
+    isPhoneValid;
 
   function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    
+    if (name === "phone" || name === "pincode") {
+      const numericValue = value.replace(/\D/g, "");
+      if (name === "phone" && numericValue.length > 10) return;
+      if (name === "pincode" && numericValue.length > 6) return;
+      setForm({ ...form, [name]: numericValue });
+      return;
+    }
+
+    setForm({ ...form, [name]: value });
   }
 
   async function handleSubmit(e) {
@@ -114,18 +127,24 @@ function AddAddressForm({
         />
         <Input
           name="pincode"
-          placeholder="Pincode"
+          placeholder="Pincode (6 digits)"
           value={form.pincode}
           onChange={handleChange}
+          maxLength={6}
+          pattern="^[1-9][0-9]{5}$"
+          title="Please enter a valid 6-digit Indian pincode"
           required
         />
       </div>
 
       <Input
         name="phone"
-        placeholder="Phone number"
+        placeholder="Phone number (10 digits)"
         value={form.phone}
         onChange={handleChange}
+        maxLength={10}
+        pattern="^[0-9]{10}$"
+        title="Please enter a valid 10-digit phone number"
         required
       />
 
