@@ -54,11 +54,15 @@ function ShoppingProductTile({ product, handleAddtoCart, onClick }) {
         )}
 
         {/* LOW STOCK */}
-        {isLowStock && (
+        {totalStock === 0 ? (
+          <span className="absolute top-2 right-2 bg-red-500 text-white text-[10px] px-2 py-1 rounded-full border shadow-sm font-medium">
+            Out of Stock
+          </span>
+        ) : isLowStock ? (
           <span className="absolute top-2 right-2 bg-white text-gray-800 text-[10px] px-2 py-1 rounded-full border shadow-sm">
             Low Stock
           </span>
-        )}
+        ) : null}
       </div>
 
       {/* CONTENT */}
@@ -104,21 +108,22 @@ function ShoppingProductTile({ product, handleAddtoCart, onClick }) {
 
           {/* CTA BUTTON */}
           <button
+            disabled={totalStock === 0}
             onClick={(e) => {
               e.stopPropagation();
               handleAddtoCart(product);
             }}
-            className="
+            className={`
               flex items-center justify-center
               w-9 h-9
               rounded-full
-              bg-[#F5EFE6]
-              text-[#1F2933]
               shadow-sm
               transition-all duration-200
-              active:scale-90
-              hover:bg-[#1F2933] hover:text-white
-            "
+              ${totalStock === 0
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-[#F5EFE6] text-[#1F2933] active:scale-90 hover:bg-[#1F2933] hover:text-white"
+              }
+            `}
           >
             <ShoppingCart size={15} />
           </button>

@@ -62,6 +62,16 @@ const addToCart = async (req, res) => {
         message: "Product not found",
       });
 
+    const sizeData = product.sizes?.find((s) => s.label === size);
+    if (!sizeData) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product size specified!",
+      });
+    }
+
+    const currentStock = Number(sizeData.stock || 0);
+
     let cart = await Cart.findOne({ userId });
     if (!cart) cart = new Cart({ userId, items: [] });
 
@@ -70,6 +80,18 @@ const addToCart = async (req, res) => {
         item.productId.toString() === productId &&
         item.size === size
     );
+
+    let requestedQty = quantity;
+    if (index !== -1) {
+      requestedQty += cart.items[index].quantity;
+    }
+
+    if (requestedQty > currentStock) {
+      return res.status(400).json({
+        success: false,
+        message: `Stock limit reached. Only ${currentStock} item(s) available.`,
+      });
+    }
 
     if (index === -1) {
       cart.items.push({ productId, size, quantity });
@@ -139,6 +161,30 @@ const updateCartItemQty = async (req, res) => {
         success: false,
         message: "Item not found",
       });
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    const sizeData = product.sizes?.find((s) => s.label === size);
+    if (!sizeData) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product size specified!",
+      });
+    }
+
+    const currentStock = Number(sizeData.stock || 0);
+    if (quantity > currentStock) {
+      return res.status(400).json({
+        success: false,
+        message: `Stock limit reached. Only ${currentStock} item(s) available.`,
+      });
+    }
 
     cart.items[index].quantity = quantity;
     await cart.save();

@@ -103,9 +103,9 @@ function AdminProductTile({
                 ...product,
                 sizes: (product?.sizes || []).map((s) => ({
                   label: s.label || "",
-                  price: s.price || "",
-                  salePrice: s.salePrice || "",
-                  stock: s.stock || "",
+                  price: s.price !== undefined && s.price !== null ? s.price : "",
+                  salePrice: s.salePrice !== undefined && s.salePrice !== null ? s.salePrice : "",
+                  stock: s.stock !== undefined && s.stock !== null ? s.stock : "",
                 })),
               });
             }}

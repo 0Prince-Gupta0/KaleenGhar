@@ -29,6 +29,7 @@ function ShoppingListing() {
   );
 
   const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(1);
@@ -144,7 +145,40 @@ function ShoppingListing() {
       return;
     }
 
-    const sizeLabel = product.sizes?.[0]?.label;
+    const size = product.sizes?.[0];
+    const sizeLabel = size?.label;
+    const stock = Number(size?.stock || 0);
+
+    if (stock === 0) {
+      toast({
+        title: "Out of Stock",
+        description: "This product is currently out of stock.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const existingItem = cartItems?.find(
+      (item) => {
+        const itemProdId = typeof item.productId === "object" && item.productId !== null
+          ? String(item.productId._id)
+          : String(item.productId);
+        return itemProdId === String(product._id) && item.size === sizeLabel;
+      }
+    );
+
+    const existingQuantity = existingItem?.quantity || 0;
+
+    if (existingQuantity + 1 > stock) {
+      toast({
+        title: "Stock limit reached",
+        description: `Only ${stock} item${
+          stock > 1 ? "s" : ""
+        } available in stock.`,
+        variant: "destructive",
+      });
+      return;
+    }
 
     dispatch(
       addToCart({
