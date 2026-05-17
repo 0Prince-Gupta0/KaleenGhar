@@ -15,14 +15,14 @@ exports.razorpayWebhook = async (req, res) => {
 
     const expectedSignature = crypto
       .createHmac("sha256", secret)
-      .update(req.body)
+      .update(req.rawBody)
       .digest("hex");
 
     if (signature !== expectedSignature) {
       return res.status(400).json({ success: false });
     }
 
-    const event = JSON.parse(req.body.toString());
+    const event = JSON.parse(req.rawBody.toString());
 
     // ✅ PAYMENT SUCCESS
     if (event.event === "payment.captured") {

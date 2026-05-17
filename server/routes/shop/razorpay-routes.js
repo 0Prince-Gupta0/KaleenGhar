@@ -11,11 +11,7 @@ const { razorpayWebhook } = require("../../controllers/shop/razorpay-webhook");
 router.post("/create-order", authMiddleware, createOrder);
 router.post("/verify", authMiddleware, verifyPayment);
 router.post("/cancel", authMiddleware, cancelPayment);
-router.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),
-  razorpayWebhook
-);
+router.post("/webhook", razorpayWebhook);
 
 
 module.exports = router;

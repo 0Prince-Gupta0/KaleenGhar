@@ -68,21 +68,18 @@ app.use(
     credentials: true,
   })
 );
-app.use(
-  "/api/payment/webhook",
-  express.raw({ type: "application/json" }),
-  require("./routes/shop/razorpay-routes")
-);
-
-/* ================= STRIPE WEBHOOK (RAW BODY) ================= */
-app.use(
-  "/api/shop/stripe/webhook",
-  express.raw({ type: "application/json" })
-);
-
 /* ================= MIDDLEWARE ================= */
 app.use(cookieParser());
-app.use(express.json());
+
+// Capture raw body for webhook signature verification
+app.use(express.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  }
+}));
+
+/* ================= MIDDLEWARE ================= */
+
 app.use("/api", generalLimiter);
 app.use("/api/auth/login", authLimiter);
 app.use("/api/auth/register", authLimiter);
