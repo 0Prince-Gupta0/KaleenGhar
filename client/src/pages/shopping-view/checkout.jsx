@@ -149,6 +149,25 @@ return toast({ title: "Cart is empty", variant: "destructive" });
     },
 
     theme: { color: "#000000" },
+    modal: {
+      ondismiss: async function () {
+        try {
+          await fetch(`${BASE_URL}/api/payment/cancel`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId: data.razorpayOrder.id }),
+          });
+          toast({
+            title: "Payment Cancelled",
+            description: "You closed the payment window.",
+            variant: "destructive",
+          });
+        } catch (error) {
+          console.error("Cancel failed:", error);
+        }
+      },
+    },
   };
 
   new window.Razorpay(options).open();
