@@ -13,16 +13,20 @@ exports.razorpayWebhook = async (req, res) => {
 
     const signature = req.headers["x-razorpay-signature"];
 
+    const rawBody = Buffer.isBuffer(req.body) ? req.body : Buffer.from(req.body || "");
+
     const expectedSignature = crypto
       .createHmac("sha256", secret)
-      .update(req.body)
+      .update(rawBody)
       .digest("hex");
 
     if (signature !== expectedSignature) {
+      console.error("Razorpay webhook: invalid signature");
       return res.status(400).json({ success: false });
     }
 
-    const event = JSON.parse(req.body.toString());
+    const event = JSON.parse(rawBody.toString());
+    console.log("Razorpay webhook event:", event.event);
 
     // ✅ PAYMENT SUCCESS
     if (event.event === "payment.captured") {
